@@ -49,9 +49,9 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 
 #### 1. Install from Store (Recommended)
 - [Chrome Web Store](https://chromewebstore.google.com/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)
-- [Microsoft Edge Add-ons](Coming soon)
+- [Microsoft Edge Add-ons](https://chromewebstore.google.com/detail/deepseek-ai/bjjobdlpgglckcmhgmmecijpfobmcpap)
 
-#### 2. Manual Installation
+#### 2. Manual Installations
 ```bash
 # Clone the repository
 git clone https://github.com/DeepLifeStudio/DeepSeekAI.git

@@ -211,7 +211,8 @@ const translations = {
     rememberWindowSizeLabel: "保存窗口大小",
     rememberWindowSizeTip: "记住您调整后的会话窗口大小，下次打开时将保持相同尺寸",
     pinWindowLabel: "固定窗口",
-    pinWindowTip: "开启后，点击窗口外部不会自动关闭会话窗口"
+    pinWindowTip: "开启后，点击窗口外部不会自动关闭会话窗口",
+    warningMessage: "DeepSeek近期一直在遭受大规模网络攻击，部分网站和API服务可能暂时无法正常使用，请等待官方恢复"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -237,7 +238,8 @@ const translations = {
     rememberWindowSizeLabel: "Save Window Size",
     rememberWindowSizeTip: "Remember your preferred chat window size for future sessions",
     pinWindowLabel: "Pin Window",
-    pinWindowTip: "When enabled, clicking outside the window won't close it"
+    pinWindowTip: "When enabled, clicking outside the window won't close it",
+    warningMessage: "DeepSeek is currently experiencing large-scale network attacks. Some website and API services may be temporarily unavailable."
   },
 };
 
@@ -249,6 +251,12 @@ const setCurrentLang = (lang) => localStorage.setItem('preferredLang', lang);
 const updateContent = () => {
   const currentLang = getCurrentLang();
   const langData = translations[currentLang];
+
+  // 更新警告信息
+  const warningText = document.getElementById('warningText');
+  if (warningText) {
+    warningText.textContent = langData.warningMessage;
+  }
 
   // 使用现代的DOM操作方法
   const elements = {

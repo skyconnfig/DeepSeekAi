@@ -49,7 +49,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 
 #### 1. 应用商店安装（推荐）
 - [Chrome Web Store](https://chromewebstore.google.com/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)
-- [Microsoft Edge Add-ons](即将上线)
+- [Microsoft Edge Add-ons](https://chromewebstore.google.com/detail/deepseek-ai/bjjobdlpgglckcmhgmmecijpfobmcpap)
 
 #### 2. 手动安装
 ```bash

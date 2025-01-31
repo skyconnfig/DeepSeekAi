@@ -316,13 +316,14 @@
 /* 消息气泡基础样式 */
 .user-question,
 .ai-answer {
-  position: relative;
+  position: relative !important;
   padding-right: 15px !important;
   margin: 5px 0;
   margin-bottom: 30px;
-  display: block;
-  clear: both;
+  display: block !important;
+  clear: both !important;
   max-width: calc(100% - 40px);
+  isolation: isolate; /* 创建新的层叠上下文 */
 }
 
 .ai-answer p,
@@ -387,6 +388,8 @@
 
 /* 图标包装器样式 */
 .icon-wrapper {
+  position: relative !important;
+  z-index: 1 !important;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -418,13 +421,13 @@
 
 /* 图标容器基础样式 */
 .icon-container {
-  position: absolute;
-  bottom: -25px;
-  right: -5px;
+  position: absolute !important;
+  bottom: -25px !important;
+  right: -5px !important;
   display: none;
   gap: 2px;
   align-items: center;
-  z-index: 3;
+  z-index: 10 !important; /* 确保在消息内容之上 */
   padding: 4px 6px;
   border-radius: 8px;
   background-color: var(--bg-secondary);
@@ -432,6 +435,7 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  transform: translateZ(0); /* 强制创建新的层叠上下文 */
 }
 
 /* 用户消息中的图标容器样式 */
@@ -551,14 +555,11 @@
 
 /* 调整代码块容器样式 */
 .code-block-wrapper {
-  position: relative;
-  margin: 12px 0;
-  border-radius: 12px;
-  background-color: var(--code-block-bg);
-  border: 1px solid var(--code-block-border);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative !important;
+  overflow: visible !important; /* 允许按钮溢出显示 */
+  margin: 1em 0;
+  border-radius: 8px;
+  isolation: isolate; /* 创建新的层叠上下文 */
 }
 
 .code-block-wrapper pre {
@@ -706,19 +707,12 @@
   color: #4aa8ff;
 }
 
-/* 代码块工具栏 */
-.theme-adaptive .code-block-wrapper {
-  position: relative;
-  overflow: hidden;
-  margin: 1em 0;
-  border-radius: 8px;
-}
-
 /* 复制按钮样式优化 */
 .theme-adaptive .code-block-wrapper .copy-button {
-  position: absolute;
-  top: 8px;
-  right: 8px;
+  position: absolute !important;
+  top: 8px !important;
+  right: 8px !important;
+  z-index: 20 !important; /* 确保在代码块内容之上 */
   background-color: var(--bg-secondary);
   border: 1px solid var(--border-color);
   border-radius: 6px;
@@ -1199,4 +1193,27 @@
 /* 展开状态的图标 */
 .theme-adaptive .reasoning-content.expanded .reasoning-toggle::before {
   transform: rotate(45deg);
+}
+
+/* 确保最后一个消息的按钮正确显示 */
+.theme-adaptive #ai-response-container {
+  padding-bottom: 60px !important; /* 为最后一个消息的按钮预留空间 */
+}
+
+/* 修复最后一个消息的按钮位置 */
+.theme-adaptive #ai-response-container > :last-child {
+  margin-bottom: 40px !important; /* 确保最后一个消息有足够的底部间距 */
+}
+
+/* 确保按钮容器不会被截断 */
+.theme-adaptive .ai-answer,
+.theme-adaptive .user-question {
+  overflow: visible !important;
+  position: relative !important;
+}
+
+/* 优化按钮的显示层级 */
+.theme-adaptive .icon-wrapper {
+  position: relative !important;
+  z-index: 1 !important;
 }

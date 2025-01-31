@@ -53,12 +53,73 @@
   --reasoning-border: rgba(60, 60, 67, 0.12);
   --reasoning-text: #666666;
 
+  /* 添加字体相关变量 */
+  --font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", sans-serif;
+  --font-size-base: 15px;
+  --line-height-base: 1.4;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 600;
+
   /* 应用基础样式 */
   background-color: var(--bg-primary);
   color: var(--text-primary);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   transition: all 0.3s cubic-bezier(0.4, 0.0, 0.2, 1);
+
+  /* 添加字体重置 */
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-base) !important;
+  font-weight: var(--font-weight-normal) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+
+  /* 确保所有子元素继承字体设置 */
+  * {
+    font-family: inherit !important;
+    font-size: inherit !important;
+    line-height: inherit !important;
+    font-weight: inherit !important;
+    -webkit-font-smoothing: inherit !important;
+    -moz-osx-font-smoothing: inherit !important;
+  }
+}
+
+/* 确保对话内容使用正确的字体样式 */
+.theme-adaptive .ai-answer,
+.theme-adaptive .user-question {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-base) !important;
+  font-weight: var(--font-weight-normal) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* 确保输入框使用正确的字体样式 */
+.theme-adaptive .expandable-textarea,
+.theme-adaptive .textarea-default {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-base) !important;
+  font-weight: var(--font-weight-normal) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+}
+
+/* 重置所有可能影响字体的元素 */
+.theme-adaptive p,
+.theme-adaptive span,
+.theme-adaptive div,
+.theme-adaptive textarea {
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-base) !important;
+  line-height: var(--line-height-base) !important;
+  font-weight: var(--font-weight-normal) !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 /* 暗色模式样式 */
@@ -1035,399 +1096,12 @@
   color: inherit;  /* 继承父元素的文本颜色 */
 }
 
-.user-question,
-.ai-answer {
-  position: relative;
-  padding-right: 15px !important;
-  margin: 5px 0;
-  margin-bottom: 30px;
-  display: block;
-  clear: both;
-  max-width: calc(100% - 40px);
-}
-
-.ai-answer p, .user-question p {
-  margin-block-start: 0;
-  margin-block-end: 0;
-}
-
-.icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  opacity: 0.7;
-  cursor: pointer;
-}
-
-.icon-wrapper:hover {
-  opacity: 1;
-  transform: scale(1.1);
-  background-color: rgba(0, 0, 0, 0.06);
-}
-
-.user-question .icon-wrapper:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-.theme-adaptive.dark-mode .icon-wrapper:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.icon-wrapper:active {
-  transform: scale(0.92);
-  opacity: 0.6;
-}
-
-/* 图标容器样式 */
-.icon-container {
-  position: absolute;
-  bottom: -25px;
-  right: -5px;
-  display: none;
-  gap: 2px;
-  align-items: center;
-  z-index: 3;
-  padding: 4px 6px;
-  border-radius: 8px;
-  background-color: var(--bg-secondary);
-  border: 0.5px solid var(--border-color);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-}
-
-/* 用户消息中的图标容器样式 */
-.user-question .icon-container {
-  background-color: rgba(255, 255, 255, 0.15);
-  border: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
-}
-
-/* 图标包装器样式 */
-.icon-wrapper {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  border-radius: 6px;
-  transition: all 0.2s ease;
-  opacity: 0.7;
-  cursor: pointer;
-}
-
-.icon-wrapper:hover {
-  opacity: 1;
-  transform: scale(1.1);
-  background-color: rgba(0, 0, 0, 0.06);
-}
-
-.user-question .icon-wrapper:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-
-.theme-adaptive.dark-mode .icon-wrapper:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-.icon-wrapper:active {
-  transform: scale(0.92);
-  opacity: 0.6;
-}
-
-/* 图标基础样式 */
-.icon-container img {
-  width: 18px;
-  height: 18px;
-  transition: all 0.2s ease;
-  cursor: pointer;
-  opacity: 0.6;
-}
-
-/* 日间模式图标样式 */
-.theme-adaptive.light-mode .icon-container img {
-  filter: brightness(0.4);
-}
-
-/* 夜间模式图标样式 */
-.theme-adaptive.dark-mode .icon-container img {
-  filter: invert(1) brightness(0.9);
-}
-
-/* 用户消息中的图标样式 */
-.user-question .icon-container img {
-  filter: brightness(10);
-  opacity: 0.9;
-}
-
-/* 工具提示样式 */
-.tooltip .tooltiptext {
-  font-size: 12px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background-color: rgba(0, 0, 0, 0.8);
-  color: white;
-  border: none;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  visibility: hidden;
-  text-align: center;
-  position: absolute;
-  z-index: 1;
-  width: max-content;
-  bottom: 130%;
-  left: 50%;
-  transform: translateX(-50%);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.tooltip .tooltiptext::after {
-  content: "";
-  position: absolute;
-  top: 100%;
-  left: 50%;
-  margin-left: -5px;
-  border-width: 5px;
-  border-style: solid;
-  border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
-}
-
-.tooltip:hover .tooltiptext {
-  visibility: visible;
-  opacity: 1;
-}
-
-/* Popup specific styles from popup.js */
-#ai-popup {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  display: flex;
-  flex-direction: column;
-}
-
-#ai-response-container {
-  flex: 1;
-  min-height: 0;
-  position: relative;
-  margin-bottom: 60px;
-}
-
-.input-container-wrapper {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 10px 16px;
-  background: inherit;
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  z-index: 2;
-  box-sizing: border-box;
-}
-
-.input-container {
-  position: relative;
-  width: 100%;
-  margin: 0 auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.loading-icon {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 20px;
-  height: 20px;
-  display: none;
-  color: var(--text-secondary);
-}
-
-.loading-icon.active {
-  display: block;
-  animation: loading-breathe 2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes loading-breathe {
-  0%,
-  100% {
-    opacity: 0.4;
-    transform: translateY(-50%) scale(0.95);
-  }
-  50% {
-    opacity: 0.8;
-    transform: translateY(-50%) scale(1);
-  }
-}
-
-/* 优化主题切换过渡效果 */
-.theme-adaptive,
-.theme-adaptive *:not(script):not(style) {
-  transition-property: background-color, color, border-color, box-shadow, opacity, transform;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: auto;
-}
-
-/* 确保滚动条和其他UI元素的过渡效果 */
-.theme-adaptive .ps__rail-y,
-.theme-adaptive .ps__thumb-y,
-.theme-adaptive .icon-container,
-.theme-adaptive .code-block-wrapper,
-.theme-adaptive pre.hljs,
-.theme-adaptive .copy-button,
-.theme-adaptive .input-container-wrapper {
-  transition-property: background-color, color, border-color, box-shadow, opacity, transform;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: auto;
-}
-
-/* 优化代码高亮过渡效果 */
-.theme-adaptive .hljs,
-.theme-adaptive .hljs *,
-.theme-adaptive pre.hljs * {
-  transition-property: color, background-color;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 优化数学公式过渡效果 */
-.theme-adaptive mjx-container,
-.theme-adaptive .math-inline,
-.theme-adaptive .math-block {
-  transition-property: filter;
-  transition-duration: 200ms;
-  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* 数学公式样式 */
-.theme-adaptive .math-inline,
-.theme-adaptive .math-block {
-  background: transparent !important;
-  color: inherit !important;
-}
-
-.theme-adaptive .math-block {
-  display: block;
-  margin: 1em 0;
-  text-align: center;
-  overflow-x: auto;
-  overflow-y: hidden;
-  width: 100%;
-}
-
-.theme-adaptive .math-inline {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  margin: 0 0.2em;
-}
-
-/* MathJax 特定样式 */
-.theme-adaptive mjx-container {
-  background: transparent !important;
-  color: inherit !important;
-}
-
-.theme-adaptive mjx-container[display="true"] {
-  margin: 1em 0 !important;
-  padding: 0.5em 0 !important;
-  text-align: center !important;
-}
-
-.theme-adaptive mjx-container:not([display="true"]) {
-  display: inline-flex !important;
-  align-items: center !important;
-  margin: 0 0.2em !important;
-}
-
-/* 确保公式在暗色模式下正确显示 */
-.theme-adaptive.dark-mode mjx-container {
-  filter: invert(1) hue-rotate(180deg);
-}
-
-/* 数学公式滚动条样式 */
-.theme-adaptive .ai-answer mjx-container::-webkit-scrollbar,
-.theme-adaptive .ai-answer .MathJax::-webkit-scrollbar,
-.theme-adaptive .ai-answer .MathJax_SVG::-webkit-scrollbar,
-.theme-adaptive .ai-answer .MathJax_Display::-webkit-scrollbar {
-  height: 1px !important;
-}
-
-.theme-adaptive .ai-answer mjx-container::-webkit-scrollbar-thumb,
-.theme-adaptive .ai-answer .MathJax::-webkit-scrollbar-thumb,
-.theme-adaptive .ai-answer .MathJax_SVG::-webkit-scrollbar-thumb,
-.theme-adaptive .ai-answer .MathJax_Display::-webkit-scrollbar-thumb {
-  background-color: var(--scrollbar-thumb);
-  border-radius: 2px;
-  opacity: 0.3;
-}
-
-/* Firefox 滚动条样式 */
-.theme-adaptive .ai-answer mjx-container,
-.theme-adaptive .ai-answer .MathJax,
-.theme-adaptive .ai-answer .MathJax_SVG,
-.theme-adaptive .ai-answer .MathJax_Display {
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) transparent;
-}
-
-/* 优化公式渲染过程 */
-.theme-adaptive .ai-answer .MathJax-Processing {
-  visibility: hidden !important;
-}
-
-.theme-adaptive .ai-answer .MathJax-Processed {
-  visibility: visible !important;
-  transition: visibility 0s !important;
-}
-
-.math-block {
-  display: block;
-  margin: 1em 0;
-  text-align: center;
-  overflow-x: auto;
-  overflow-y: hidden;
-}
-
-.math-inline {
-  display: inline-flex;
-  align-items: center;
-  vertical-align: middle;
-  margin: 0 0.2em;
-}
-
-/* 确保公式容器不会影响行高 */
-.theme-adaptive .ai-answer p {
-  line-height: 1.6 !important;
-  margin: 0.8em 0 !important;
-  overflow-x: visible !important;
-}
-
-/* 优化公式渲染 */
-.theme-adaptive .ai-answer .MathJax {
-  outline: none !important;
-}
-
-/* 确保块级公式前后有足够空间 */
-.theme-adaptive .ai-answer .math-block {
-  margin: 1em 0 !important;
-  padding: 0.5em 0 !important;
-}
-
-/* 调整行内公式的对齐 */
-.theme-adaptive .ai-answer .math-inline {
-  vertical-align: middle !important;
-  line-height: 0 !important;
-  position: relative !important;
-  top: -0.1em !important;
+.code-block-wrapper code {
+  font-family: "SF Mono", Monaco, Menlo, Consolas, "Ubuntu Mono", monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  tab-size: 4;
+  color: inherit;  /* 继承父元素的文本颜色 */
 }
 
 /* 思维链样式 */

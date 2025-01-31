@@ -1,0 +1,55 @@
+{
+  "version": "1.0",
+  "categories": [
+    {
+      "name": "代码优化",
+      "prompts": [
+        {
+          "title": "代码效率优化",
+          "content": "The efficiency of the following code is low, and it does not handle edge cases. Please first explain the problems with this code and the solutions, then optimize it.",
+          "description": "分析代码效率问题并提供优化方案"
+        },
+        {
+          "title": "代码重构建议",
+          "content": "Please review this code and suggest refactoring improvements focusing on: 1) Code organization 2) Design patterns 3) Best practices 4) Performance. For each suggestion, explain the benefits.",
+          "description": "提供代码重构和改进建议"
+        }
+      ]
+    },
+    {
+      "name": "代码解释",
+      "prompts": [
+        {
+          "title": "详细代码解释",
+          "content": "Please explain this code in detail, including: 1) Overall purpose 2) Key components 3) Logic flow 4) Important functions 5) Potential issues",
+          "description": "深入解释代码的功能和实现"
+        },
+        {
+          "title": "简明代码总结",
+          "content": "Please provide a concise summary of what this code does, focusing on its main functionality and key features.",
+          "description": "简要总结代码的主要功能"
+        }
+      ]
+    },
+    {
+      "name": "API文档",
+      "prompts": [
+        {
+          "title": "生成API文档",
+          "content": "Please generate comprehensive API documentation for this code, including: 1) Function signatures 2) Parameters 3) Return values 4) Usage examples 5) Error handling",
+          "description": "生成详细的API文档"
+        }
+      ]
+    },
+    {
+      "name": "测试用例",
+      "prompts": [
+        {
+          "title": "生成单元测试",
+          "content": "Please generate unit tests for this code, covering: 1) Happy path 2) Edge cases 3) Error conditions 4) Input validation",
+          "description": "生成完整的单元测试用例"
+        }
+      ]
+    }
+  ]
+}

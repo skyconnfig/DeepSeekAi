@@ -74,16 +74,35 @@ export function createDragHandle(removeCallback) {
   dragHandle.classList.add('drag-handle');
 
   const titleContainer = document.createElement("div");
-  titleContainer.style.display = "flex";
-  titleContainer.style.alignItems = "center";
+  Object.assign(titleContainer.style, {
+    display: "flex",
+    alignItems: "center",
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    pointerEvents: "none"
+  });
 
   const logo = document.createElement("img");
   logo.src = chrome.runtime.getURL("icons/icon24.png");
-  logo.style.height = "24px";
-  logo.style.marginRight = "10px";
+  Object.assign(logo.style, {
+    height: "24px",
+    marginRight: "10px",
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    pointerEvents: "none",
+    WebkitUserDrag: "none",
+    WebkitAppRegion: "no-drag",
+    draggable: false
+  });
+  logo.setAttribute("draggable", "false");
 
   const textNode = document.createElement("span");
-  textNode.style.fontWeight = "bold";
+  Object.assign(textNode.style, {
+    fontWeight: "bold",
+    userSelect: "none",
+    WebkitUserSelect: "none",
+    pointerEvents: "none"
+  });
   textNode.textContent = "DeepSeek AI";
   titleContainer.appendChild(logo);
   titleContainer.appendChild(textNode);
@@ -96,15 +115,42 @@ export function createDragHandle(removeCallback) {
     border: "none",
     cursor: "pointer",
     padding: "0",
+    margin: "0",
     transition: "all 0.2s ease",
     position: "absolute",
     right: "10px",
+    top: "50%",
+    transform: "translateY(-50%) scale(1)",
+    width: "20px",
+    height: "20px",
+    minWidth: "20px",
+    minHeight: "20px",
+    maxWidth: "20px",
+    maxHeight: "20px",
+    lineHeight: "1",
+    outline: "none",
+    boxSizing: "content-box",
+    zIndex: "2147483647",
+    appearance: "none",
+    WebkitAppearance: "none",
+    MozAppearance: "none"
   });
 
   const closeIcon = document.createElement("img");
   closeIcon.src = chrome.runtime.getURL("icons/close.svg");
-  closeIcon.style.width = "20px";
-  closeIcon.style.height = "20px";
+  Object.assign(closeIcon.style, {
+    width: "20px",
+    height: "20px",
+    display: "block",
+    padding: "0",
+    margin: "0",
+    border: "none",
+    outline: "none",
+    boxSizing: "border-box",
+    pointerEvents: "none",
+    userSelect: "none",
+    WebkitUserSelect: "none"
+  });
 
   closeButton.appendChild(closeIcon);
   dragHandle.appendChild(titleContainer);
@@ -117,17 +163,17 @@ export function createDragHandle(removeCallback) {
   dragHandle.addEventListener("mouseleave", () => {
     closeButton.style.display = "none";
     closeIcon.src = chrome.runtime.getURL("icons/close.svg");
-    closeButton.style.transform = "scale(1)";
+    closeButton.style.transform = "translateY(-50%) scale(1)";
   });
 
   closeButton.addEventListener("mouseenter", () => {
     closeIcon.src = chrome.runtime.getURL("icons/closeClicked.svg");
-    closeButton.style.transform = "scale(1.1)";
+    closeButton.style.transform = "translateY(-50%) scale(1.1)";
   });
 
   closeButton.addEventListener("mouseleave", () => {
     closeIcon.src = chrome.runtime.getURL("icons/close.svg");
-    closeButton.style.transform = "scale(1)";
+    closeButton.style.transform = "translateY(-50%) scale(1)";
   });
 
   closeButton.addEventListener("click", (event) => {

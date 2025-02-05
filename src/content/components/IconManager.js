@@ -35,7 +35,9 @@ export function createSvgIcon(iconName, title) {
   icon.src = chrome.runtime.getURL(`icons/${iconName}.svg`);
   icon.style.border = "none";
   icon.style.cursor = "pointer";
-  icon.style.transition = "transform 0.5s ease";
+  icon.style.transition = "all 0.2s ease";
+  icon.style.opacity = "1";
+  icon.style.setProperty('--icon-color', document.body.classList.contains('theme-adaptive dark-mode') ? '#ffffff' : '#000000');
 
   icon.addEventListener("mousedown", () => {
     icon.style.transform = "scale(1.2)";
@@ -96,6 +98,8 @@ export function addIconsToElement(element) {
   const copyIcon = document.createElement("img");
   copyIcon.src = chrome.runtime.getURL("icons/copy.svg");
   copyIcon.title = "Copy";
+  copyIcon.style.opacity = "1";
+  copyIcon.style.setProperty('--icon-color', document.body.classList.contains('theme-adaptive dark-mode') ? '#ffffff' : '#000000');
 
   const copyTooltip = document.createElement("span");
   copyTooltip.className = "tooltiptext";
@@ -142,6 +146,8 @@ export function addIconsToElement(element) {
       const regenerateIcon = document.createElement("img");
       regenerateIcon.src = chrome.runtime.getURL("icons/regenerate.svg");
       regenerateIcon.title = "Regenerate";
+      regenerateIcon.style.opacity = "1";
+      regenerateIcon.style.setProperty('--icon-color', document.body.classList.contains('theme-adaptive dark-mode') ? '#ffffff' : '#000000');
 
       const regenerateTooltip = document.createElement("span");
       regenerateTooltip.className = "tooltiptext";
@@ -258,6 +264,8 @@ export function updateLastAnswerIcons() {
     const regenerateIcon = document.createElement("img");
     regenerateIcon.src = chrome.runtime.getURL("icons/regenerate.svg");
     regenerateIcon.title = "Regenerate";
+    regenerateIcon.style.opacity = "1";
+    regenerateIcon.style.setProperty('--icon-color', document.body.classList.contains('theme-adaptive dark-mode') ? '#ffffff' : '#000000');
 
     const regenerateTooltip = document.createElement("span");
     regenerateTooltip.className = "tooltiptext";

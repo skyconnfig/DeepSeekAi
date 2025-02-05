@@ -766,6 +766,94 @@
       .warning-banner p {
         margin: 0;
       }
+
+      /* 火山引擎模型配置样式 */
+      .volcengine-models-container {
+        width: 100%;
+      }
+
+      .volcengine-models-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 8px;
+      }
+
+      .volcengine-models-header span {
+        font-size: 14px;
+        font-weight: 500;
+      }
+
+      .collapse-button {
+        background: none;
+        border: none;
+        padding: 4px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 4px;
+        transition: all 0.2s ease;
+      }
+
+      .collapse-button:hover {
+        background-color: rgba(0, 0, 0, 0.05);
+      }
+
+      .collapse-button.collapsed svg {
+        transform: rotate(-90deg);
+      }
+
+      .collapse-button svg {
+        transition: transform 0.2s ease;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .collapse-button:hover {
+          background-color: rgba(255, 255, 255, 0.1);
+        }
+      }
+
+      .volcengine-models-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        transition: max-height 0.2s ease;
+        overflow: hidden;
+      }
+
+      .volcengine-models-content.collapsed {
+        max-height: 0;
+      }
+
+      .volcengine-models-content a {
+        font-size: 12px;
+      }
+
+      .model-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+
+      .model-input-group label {
+        font-size: 12px;
+      }
+
+      .model-input-group input {
+        padding: 6px 10px;
+        font-size: 14px;
+        border-radius: 6px;
+        background-color: rgba(0, 0, 0, 0.05);
+        border: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .model-input-group input {
+          background-color: rgba(255, 255, 255, 0.1);
+          color: rgba(255, 255, 255, 0.85);
+        }
+      }
     </style>
   </head>
   <body>
@@ -804,10 +892,22 @@
             target="_blank"
             rel="noopener noreferrer"
             id="apiKeyLink"
+            data-deepseek="https://platform.deepseek.com/api_keys"
+            data-volcengine="https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D"
           >
             Get API Key
           </a>
         </div>
+
+        <div class="language-switch">
+          <label for="provider" id="providerLabel">Service Provider</label>
+          <select id="provider">
+            <option value="deepseek">DeepSeek</option>
+            <option value="volcengine" id="volcengineProvider">Volcano Engine</option>
+          </select>
+
+        </div>
+
         <div class="error-message" id="errorMessage"></div>
         <div class="input-container">
           <input
@@ -843,14 +943,38 @@
             </button>
           </div>
         </div>
-
+        <div class="language-switch volcengine-models" style="display: none;">
+          <div class="volcengine-models-container">
+            <div class="volcengine-models-header">
+              <span id="volcengineModelsTitle">火山引擎模型配置</span>
+              <button class="collapse-button" id="collapseButton">
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                </svg>
+              </button>
+            </div>
+            <div class="volcengine-models-content" id="volcengineModelsContent">
+              <a href="https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D" target="_blank" rel="noopener noreferrer" id="getModelId">获取Model ID</a>
+              <div class="model-input-group">
+                <label for="v3model" id="v3ModelLabel">V3 Model ID:</label>
+                <input type="text" id="v3model" placeholder="ep-xxxxxx">
+              </div>
+              <div class="model-input-group">
+                <label for="r1model" id="r1ModelLabel">R1 Model ID:</label>
+                <input type="text" id="r1model" placeholder="ep-xxxxxx">
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="language-switch">
           <label for="model" id="modelLabel">Model Selection</label>
           <select id="model">
-            <option value="v3">V3</option>
-            <option value="r1">R1</option>
+            <option value="v3" data-deepseek="deepseek-chat">V3</option>
+            <option value="r1" data-deepseek="deepseek-reasoner">R1</option>
           </select>
         </div>
+
+
 
         <div class="language-switch">
           <label for="language" id="preferredLanguageLabel">Preferred Language</label>

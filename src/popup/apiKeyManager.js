@@ -3,43 +3,57 @@ export class ApiKeyManager {
     this.lastValidatedValue = '';
   }
 
-  async validateApiKey(apiKey) {
+  async validateApiKey(apiKey, provider) {
+    if (!apiKey) return false;
+
     try {
-      const response = await fetch("https://api.deepseek.com/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: [
-            { role: "system", content: "You are a helpful assistant." },
-            { role: "user", content: "Hello!" },
-          ],
-          stream: false,
-        }),
+      const apiUrl = provider === 'volcengine'
+        ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
+        : 'https://api.deepseek.com/chat/completions';
+
+      const response = await new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({
+          action: "proxyRequest",
+          url: apiUrl,
+          method: "POST",
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${apiKey}`
+          },
+          body: JSON.stringify({
+            model: provider === 'volcengine' ? 'ep-20250205172154-ch2p6' : 'deepseek-chat',
+            messages: [{ role: 'user', content: 'test' }],
+            stream: false
+          })
+        }, response => {
+          if (chrome.runtime.lastError) {
+            reject(chrome.runtime.lastError);
+          } else {
+            resolve(response);
+          }
+        });
       });
-      return response.status !== 401;
-    } catch {
+
+      return response.ok;
+    } catch (error) {
+      console.error('API key validation error:', error);
       return false;
     }
   }
 
-  async saveApiKey(apiKey) {
+  async getApiKey(provider) {
     return new Promise((resolve) => {
-      chrome.storage.sync.set({ apiKey }, () => {
-        this.lastValidatedValue = apiKey;
-        resolve();
-      });
+      chrome.storage.sync.get(
+        provider === 'volcengine' ? 'volcengineApiKey' : 'deepseekApiKey',
+        (data) => resolve(data[provider === 'volcengine' ? 'volcengineApiKey' : 'deepseekApiKey'])
+      );
     });
   }
 
-  async getApiKey() {
+  async saveApiKey(apiKey, provider) {
     return new Promise((resolve) => {
-      chrome.storage.sync.get(["apiKey"], (data) => {
-        resolve(data.apiKey || '');
-      });
+      const key = provider === 'volcengine' ? 'volcengineApiKey' : 'deepseekApiKey';
+      chrome.storage.sync.set({ [key]: apiKey }, resolve);
     });
   }
 }

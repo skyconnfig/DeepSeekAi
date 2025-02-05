@@ -25,6 +25,11 @@ export const createQuestionInputContainer = (aiResponseContainer) => {
   const textarea = container.querySelector(".expandable-textarea");
   const sendIcon = container.querySelector(".send-icon");
   const loadingIconWrapper = container.querySelector(".loading-icon-wrapper");
+  const loadingIcon = container.querySelector(".loading-icon");
+
+  // 设置loading图标的样式
+  loadingIcon.style.opacity = "0.8";
+  loadingIcon.style.filter = document.body.classList.contains('theme-adaptive dark-mode') ? 'invert(1) brightness(0.9)' : 'brightness(0.3)';
 
   setupTextarea(textarea);
   setupSendButton(sendIcon, textarea, aiResponseContainer);

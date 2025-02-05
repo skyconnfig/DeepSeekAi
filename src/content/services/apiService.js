@@ -5,7 +5,6 @@ import { md } from "../utils/markdownRenderer";
 let messages = [];
 let isGenerating = false;
 let renderQueue = [];
-let isProcessingQueue = false;
 
 // 用于存储当前响应的内容
 let currentReasoningContent = "";
@@ -18,109 +17,70 @@ export function getIsGenerating() {
   return isGenerating;
 }
 
-// 使用防抖优化文本处理
-const processTextDebounced = (() => {
-  let timeout;
-  return (text, type, callback) => {
-    if (timeout) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(() => {
-      const result = processText(text, type);
-      callback(result);
-    }, 100);
-  };
-})();
-
-function processText(text, type) {
+// 移除不必要的防抖处理
+const processText = (text, type) => {
   if (type === 'cleanup') {
     return text.trim().replace(/\s+/g, ' ');
   }
   return text;
-}
+};
 
 // 优化渲染队列处理
 async function processRenderQueue(responseElement, ps, aiResponseContainer) {
-  if (isProcessingQueue || renderQueue.length === 0) return;
+  if (!responseElement?.isConnected || !aiResponseContainer?.isConnected) {
+    renderQueue = [];
+    return;
+  }
 
-  isProcessingQueue = true;
-  const startTime = performance.now();
+  const currentChunk = renderQueue[renderQueue.length - 1];
+  if (!currentChunk) return;
 
   try {
-    while (renderQueue.length > 0) {
-      // 检查元素是否仍然存在于 DOM 中
-      if (!responseElement || !responseElement.isConnected || !aiResponseContainer || !aiResponseContainer.isConnected) {
-        renderQueue = [];
-        break;
+    // 获取或创建reasoning content元素
+    if (currentChunk.reasoningContent) {
+      let reasoningContentElement = responseElement.querySelector('.reasoning-content');
+      if (!reasoningContentElement) {
+        reasoningContentElement = document.createElement('div');
+        reasoningContentElement.className = 'reasoning-content expanded';
+        reasoningContentElement.innerHTML = `
+          <div class="reasoning-header">
+            <div class="reasoning-toggle"></div>
+            <span>Reasoning process</span>
+          </div>
+          <div class="reasoning-content-inner"></div>
+        `;
+        responseElement.insertBefore(reasoningContentElement, responseElement.firstChild);
       }
 
-      const currentChunk = renderQueue.shift();
-
-      try {
-        // 分别渲染思维链和最终答案
-        if (currentChunk.reasoningContent) {
-          let reasoningContentElement = responseElement.querySelector('.reasoning-content');
-
-          if (!reasoningContentElement) {
-            // 如果不存在，创建新的reasoning content结构
-            reasoningContentElement = document.createElement('div');
-            reasoningContentElement.className = 'reasoning-content expanded';
-            reasoningContentElement.innerHTML = `
-              <div class="reasoning-header">
-                <div class="reasoning-toggle"></div>
-                <span>Reasoning process</span>
-              </div>
-              <div class="reasoning-content-inner"></div>
-            `;
-            responseElement.insertBefore(reasoningContentElement, responseElement.firstChild);
-          }
-
-          // 只更新内容部分
-          const reasoningInner = reasoningContentElement.querySelector('.reasoning-content-inner');
-          if (reasoningInner) {
-            const reasoningHtml = await md.render(currentChunk.reasoningContent);
-            reasoningInner.innerHTML = reasoningHtml;
-          }
-        }
-
-        if (currentChunk.content) {
-          // 查找或创建内容容器
-          let contentElement = responseElement.querySelector('.content-container');
-          if (!contentElement) {
-            contentElement = document.createElement('div');
-            contentElement.className = 'content-container';
-            responseElement.appendChild(contentElement);
-          }
-
-          const contentHtml = await md.render(currentChunk.content);
-          contentElement.innerHTML = contentHtml;
-        }
-
-        // 性能优化：使用 requestAnimationFrame 处理滚动
-        if (getAllowAutoScroll() && aiResponseContainer.isConnected) {
-          requestAnimationFrame(() => {
-            scrollToBottom(aiResponseContainer);
-          });
-        }
-
-        // 更新自定义滚动条
-        if (ps && aiResponseContainer.isConnected) {
-          requestAnimationFrame(() => {
-            ps.update();
-          });
-        }
-
-        // 性能监控：如果处理时间过长，让出主线程
-        if (performance.now() - startTime > 16) {
-          await new Promise(resolve => setTimeout(resolve, 0));
-        }
-      } catch (error) {
-        console.error('Error processing render queue:', error);
-        break;
+      const reasoningInner = reasoningContentElement.querySelector('.reasoning-content-inner');
+      if (reasoningInner) {
+        const reasoningHtml = await md.render(currentChunk.reasoningContent);
+        reasoningInner.innerHTML = reasoningHtml;
       }
     }
-  } finally {
-    isProcessingQueue = false;
+
+    // 获取或创建content容器
+    if (currentChunk.content) {
+      let contentElement = responseElement.querySelector('.content-container');
+      if (!contentElement) {
+        contentElement = document.createElement('div');
+        contentElement.className = 'content-container';
+        responseElement.appendChild(contentElement);
+      }
+
+      const contentHtml = await md.render(currentChunk.content);
+      contentElement.innerHTML = contentHtml;
+    }
+
+    // 使用requestAnimationFrame优化滚动和更新
+    if (getAllowAutoScroll() && aiResponseContainer.isConnected) {
+      requestAnimationFrame(() => {
+        scrollToBottom(aiResponseContainer);
+        if (ps?.update) ps.update();
+      });
+    }
+  } catch (error) {
+    console.error('Error processing render queue:', error);
   }
 }
 
@@ -150,54 +110,35 @@ export async function getAIResponse(
 
   isGenerating = true;
   window.currentAbortController = signal?.controller || new AbortController();
-  renderQueue = [];
 
-  // 处理消息历史
   if (isRefresh) {
-    // 如果是刷新,只移除最后一条助手的回答,保留用户的问题
     messages = messages.slice(0, -1);
   }
 
-  // 在添加新消息前验证和清理历史消息
   validateAndCleanMessages();
-
-  // 添加用户的新消息
   if (!isRefresh) {
     messages.push({ role: "user", content: text });
   }
 
-  // 再次验证确保消息历史正确
-  validateAndCleanMessages();
-
   const existingIconContainer = responseElement.querySelector('.icon-container');
   const originalClassName = responseElement.className;
-
   responseElement.textContent = "";
   if (existingIconContainer) {
     responseElement.appendChild(existingIconContainer);
   }
-
   responseElement.className = originalClassName;
 
-  // 在函数结束时确保清理
-  const cleanup = () => {
-    isGenerating = false;
-    window.currentAbortController = null;
-    renderQueue = [];  // 清空渲染队列
-    if (ps && ps.element && ps.element.isConnected) {
-      ps.update();
-    }
-  };
-
   try {
-    const [{ apiKey, language }, { model }] = await Promise.all([
-      new Promise(resolve => {
-        chrome.runtime.sendMessage({ action: "getApiKeyAndLanguage" }, resolve);
-      }),
-      new Promise(resolve => {
-        chrome.runtime.sendMessage({ action: "getModel" }, resolve);
-      })
-    ]);
+    const settings = await new Promise(resolve => {
+      chrome.runtime.sendMessage({ action: "getSettings" }, resolve);
+    });
+
+    const provider = settings.provider || 'deepseek';
+    const apiKey = provider === 'volcengine' ? settings.volcengineApiKey : settings.deepseekApiKey;
+    const language = settings.language;
+    const model = settings.model;
+    const v3model = settings.v3model;
+    const r1model = settings.r1model;
 
     if (!apiKey) {
       const linkElement = document.createElement("a");
@@ -212,11 +153,9 @@ export async function getAIResponse(
           await chrome.runtime.sendMessage({ action: "openPopup" });
         } catch (error) {
           console.error('Failed to open popup:', error);
-          // 如果发送消息失败，尝试使用备用方法
           chrome.runtime.sendMessage({ action: "getSelectedText" });
         }
       });
-
       responseElement.textContent = "";
       responseElement.appendChild(linkElement);
       if (existingIconContainer) {
@@ -225,119 +164,123 @@ export async function getAIResponse(
       return;
     }
 
-    const requestBody = {
-      model: (text === "Good morning 👋" || text === "Good afternoon 👋" || text === "Good evening 👋")
-        ? "deepseek-chat"
-        : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"),
-      messages: [
-        {
-          role: "system",
-          content: `You are a helpful AI assistant. ${
-            quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
-              ? quickActionPrompt
-              : language === "auto"
-                ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc.${quickActionPrompt}"
-                : `You MUST respond ONLY in ${language}. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`
-          }`,
-        },
-        ...messages
-      ],
-      stream: true,
-      temperature: 0.5,
-    };
+    const modelName = provider === 'volcengine'
+      ? (model === 'r1' ? r1model : v3model)
+      : (isGreeting ? "deepseek-chat" : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"));
 
+    const systemPrompt = quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
+      ? quickActionPrompt
+      : language === "auto"
+        ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc."
+        : `You MUST respond ONLY in ${language}. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`;
 
-    const response = await fetch("https://api.deepseek.com/chat/completions", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestBody),
-      signal: window.currentAbortController.signal,
-    });
+    const apiUrl = provider === 'volcengine'
+      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
+      : 'https://api.deepseek.com/v1/chat/completions';
 
-    if (!response.ok) {
-      handleError(response.status, responseElement);
-      return;
-    }
+    const response = await new Promise((resolve, reject) => {
+      let aiResponse = "";
+      let reasoningContent = "";
+      let aborted = false;
 
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder("utf-8");
-    let aiResponse = "";
-    let reasoningContent = "";
-    let lastProcessTime = performance.now();
-    let lastResponseTime = Date.now();
+      window.currentAbortController.signal.addEventListener('abort', () => {
+        aborted = true;
+        resolve({ ok: true, content: aiResponse });
+      });
 
-    try {
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      function handleResponse(response) {
+        if (aborted) return;
 
-        // 更新最后响应时间
-        lastResponseTime = Date.now();
+        if (chrome.runtime.lastError) {
+          reject(chrome.runtime.lastError);
+          return;
+        }
 
-        const chunk = decoder.decode(value, { stream: true });
-        const lines = chunk.split("\n\n");
+        if (!response.ok) {
+          reject(new Error(response.error || 'Request failed'));
+          return;
+        }
 
-        for (const line of lines) {
-          if (line.startsWith("data: ")) {
-            const jsonLine = line.slice(6);
-            if (jsonLine === "[DONE]") {
-              break;
+        if (response.done) {
+          resolve({ ok: true, content: aiResponse });
+          return;
+        }
+
+        try {
+          const line = response.data;
+          if (!line.startsWith("data: ")) return;
+
+          const jsonLine = line.slice(6);
+          if (jsonLine === "[DONE]") {
+            resolve({ ok: true, content: aiResponse });
+            return;
+          }
+
+          const data = JSON.parse(jsonLine);
+
+          // 使用 requestAnimationFrame 优化渲染
+          requestAnimationFrame(() => {
+            if (model === "r1" && data.choices?.[0]?.delta?.reasoning_content) {
+              reasoningContent += data.choices[0].delta.reasoning_content;
+              currentReasoningContent = reasoningContent;
+              renderQueue = [{
+                reasoningContent,
+                content: aiResponse
+              }];
+              processRenderQueue(responseElement, ps, aiResponseContainer);
             }
 
-            try {
-              const data = JSON.parse(jsonLine);
-
-              // 处理思维链内容（仅对R1模型）
-              if (model === "r1" && data.choices?.[0]?.delta?.reasoning_content) {
-                reasoningContent += data.choices[0].delta.reasoning_content;
-                currentReasoningContent = reasoningContent;
-              }
-
-              // 处理最终答案内容
-              if (data.choices?.[0]?.delta?.content) {
-                aiResponse += data.choices[0].delta.content;
-                currentContent = aiResponse;
-              }
-
-              // 将两种内容都加入渲染队列
-              renderQueue.push({
+            if (data.choices?.[0]?.delta?.content) {
+              const content = data.choices[0].delta.content;
+              aiResponse += content;
+              currentContent = aiResponse;
+              renderQueue = [{
                 reasoningContent: model === "r1" ? reasoningContent : "",
                 content: aiResponse
-              });
-
-
-              // 性能优化：控制渲染频率
-              const currentTime = performance.now();
-              if (currentTime - lastProcessTime > 32) {
-                await processRenderQueue(responseElement, ps, aiResponseContainer);
-                lastProcessTime = currentTime;
-              }
-            } catch (e) {
-              console.error("Error parsing JSON:", e);
+              }];
+              processRenderQueue(responseElement, ps, aiResponseContainer);
             }
-          }
+          });
+        } catch (e) {
+          console.error("Error parsing JSON:", e);
         }
       }
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('Request aborted, keeping generated content');
-      } else {
-        throw error;
-      }
-    }
 
-    // 确保处理完所有剩余的渲染队列
-    await processRenderQueue(responseElement, ps, aiResponseContainer);
+      const messageListener = (msg) => {
+        if (msg.type === "streamResponse") {
+          handleResponse(msg.response);
+          if (msg.response.done) {
+            chrome.runtime.onMessage.removeListener(messageListener);
+          }
+        }
+      };
 
-    // 更新消息历史（只保存最终答案，不保存思维链）
+      chrome.runtime.onMessage.addListener(messageListener);
+
+      chrome.runtime.sendMessage({
+        action: "proxyRequest",
+        url: apiUrl,
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify({
+          model: modelName,
+          messages: [
+            { role: "system", content: systemPrompt },
+            ...messages
+          ],
+          stream: true,
+          temperature: 0.5,
+        })
+      });
+    });
+
     if (currentContent) {
       messages.push({ role: "assistant", content: currentContent });
     }
-
-    // 使用 requestIdleCallback 优化图标更新
+    console.log(messages)
     requestIdleCallback(() => {
       if (window.addIconsToElement) {
         window.addIconsToElement(responseElement);
@@ -347,12 +290,10 @@ export async function getAIResponse(
       }
     }, { timeout: 1000 });
 
-    // 优化按钮显示逻辑
     if (iconContainer) {
       iconContainer.style.display = 'flex';
       iconContainer.dataset.initialShow = 'true';
 
-      // 使用 IntersectionObserver 优化按钮位置调整
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
@@ -380,7 +321,7 @@ export async function getAIResponse(
       requestIdleCallback(() => onComplete(), { timeout: 1000 });
     }
   } catch (error) {
-    console.error("Fetch error:", error);
+    console.error("Error:", error);
     if (error.name !== 'AbortError') {
       const textNode = document.createTextNode("Request failed. Please try again later.");
       responseElement.textContent = "";
@@ -390,7 +331,8 @@ export async function getAIResponse(
       }
     }
   } finally {
-    cleanup();
+    isGenerating = false;
+    window.currentAbortController = null;
   }
 }
 

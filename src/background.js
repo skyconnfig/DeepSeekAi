@@ -1,24 +1,96 @@
 // 在文件开头添加调试日志
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === "getApiKeyAndLanguage") {
-    chrome.storage.sync.get(["apiKey", "language"], function (data) {
-      console.log('data', data);
+  if (request.action === "getSettings") {
+    chrome.storage.sync.get(
+      ["deepseekApiKey", "volcengineApiKey", "language", "model", "provider", "v3model", "r1model"],
+      (data) => {
+        sendResponse({
+          deepseekApiKey: data.deepseekApiKey || '',
+          volcengineApiKey: data.volcengineApiKey || '',
+          language: data.language || 'en',
+          model: data.model || 'v3',
+          provider: data.provider || 'deepseek',
+          v3model: data.v3model || '',
+          r1model: data.r1model || ''
+        });
+      }
+    );
+    return true;
+  }
 
-      sendResponse({
-        apiKey: data.apiKey || "",
-        language: data.language || "auto",
+  if (request.action === "proxyRequest") {
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetch(request.url, {
+      method: request.method,
+      headers: request.headers,
+      body: request.body,
+      signal
+    })
+    .then(async response => {
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      try {
+        while (true) {
+          const { done, value } = await reader.read();
+
+          if (done) {
+            chrome.tabs.sendMessage(sender.tab.id, {
+              type: "streamResponse",
+              response: { data: 'data: [DONE]\n\n', ok: true, done: true }
+            });
+            break;
+          }
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.trim() === '') continue;
+            if (!line.startsWith('data: ')) continue;
+
+            const data = line.slice(6);
+            if (data === '[DONE]') {
+              chrome.tabs.sendMessage(sender.tab.id, {
+                type: "streamResponse",
+                response: { data: 'data: [DONE]\n\n', ok: true, done: true }
+              });
+              break;
+            }
+
+            chrome.tabs.sendMessage(sender.tab.id, {
+              type: "streamResponse",
+              response: { data: line + '\n\n', ok: true, done: false }
+            });
+          }
+        }
+      } catch (error) {
+        chrome.tabs.sendMessage(sender.tab.id, {
+          type: "streamResponse",
+          response: { ok: false, error: error.message }
+        });
+      } finally {
+        reader.releaseLock();
+      }
+    })
+    .catch(error => {
+      chrome.tabs.sendMessage(sender.tab.id, {
+        type: "streamResponse",
+        response: { ok: false, error: error.message }
       });
     });
+
     return true;
-  } else if (request.action === "getModel") {
-    chrome.storage.sync.get(["model"], function (data) {
-      sendResponse({
-        model: data.model || "V3", // 默认使用 R1 模型
-      });
-    });
-    return true;
-  } else if (request.action === "openPopup") {
+  }
+
+  if (request.action === "openPopup") {
     chrome.action.openPopup();
     return true;
   }
@@ -102,3 +174,4 @@ chrome.runtime.onInstalled.addListener((details) => {
     });
   }
 });
+

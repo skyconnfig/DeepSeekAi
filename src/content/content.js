@@ -1,10 +1,12 @@
 import './styles/style.css';
 import { createSvgIcon, createIcon } from "./components/IconManager";
+import { createQuickActionButtons } from "./components/QuickActionButtons";
 import { createPopup } from "./popup";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 import { popupStateManager } from './utils/popupStateManager';
 
 let currentIcon = null;
+let currentQuickActions = null;
 let isHandlingIconClick = false;
 let isSelectionEnabled = true; // 默认启用
 let selectedText = "";
@@ -43,10 +45,7 @@ chrome.storage.onChanged.addListener(function(changes, namespace) {
 });
 
 function removeIcon() {
-  if (currentIcon && document.body.contains(currentIcon)) {
-    document.body.removeChild(currentIcon);
-    currentIcon = null;
-  }
+  // 保留这个函数是为了兼容性，但它现在什么都不做
 }
 
 // 更新安全的弹窗移除函数
@@ -151,7 +150,7 @@ function safeRemovePopup() {
   popupStateManager.reset();
 }
 
-function handlePopupCreation(selectedText, rect, hideQuestion = false) {
+function handlePopupCreation(selectedText, rect, hideQuestion = false, messages = null, quickActionPrompt = null) {
   if (popupStateManager.isCreating()) return;
 
   popupStateManager.setCreating(true);
@@ -163,7 +162,7 @@ function handlePopupCreation(selectedText, rect, hideQuestion = false) {
     window.getSelection().removeAllRanges();
 
     safeRemovePopup();
-    currentPopup = createPopup(selectedText, rect, hideQuestion, safeRemovePopup);
+    currentPopup = createPopup(selectedText, rect, hideQuestion, safeRemovePopup, messages, quickActionPrompt);
     currentPopup.style.minWidth = '300px';
     currentPopup.style.minHeight = '200px';
 
@@ -266,42 +265,53 @@ function setupResizeObserver(popup) {
   popup._resizeObserver.observe(popup);
 }
 
-function handleIconClick(e, selectedText, rect, selection) {
+function handleIconClick(e, selectedText, rect) {
   e.stopPropagation();
   e.preventDefault();
 
   isHandlingIconClick = true;
-  removeIcon();
-  selection.removeAllRanges();
-  handlePopupCreation(selectedText, rect);
 
-  setTimeout(() => {
-    isHandlingIconClick = false;
-  }, 100);
+  try {
+    // 移除按钮容器
+    removeQuickActions();
+
+    // 如果没有传入rect,则使用默认位置
+    if (!rect) {
+      rect = {
+        left: window.innerWidth / 2,
+        top: window.innerHeight / 2 - 190,
+        width: 0,
+        height: 0
+      };
+    }
+
+    // 清除选中的文本
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+    }
+
+    // 显示弹窗
+    handlePopupCreation(selectedText || "", rect);
+  } catch (error) {
+    console.warn('Error in handleIconClick:', error);
+    safeRemovePopup();
+  } finally {
+    setTimeout(() => {
+      isHandlingIconClick = false;
+    }, 100);
+  }
 }
 
 document.addEventListener("mouseup", function (event) {
   if (!isSelectionEnabled || popupStateManager.isCreating() || isHandlingIconClick) return;
 
   const selection = window.getSelection();
-  const selectedText = selection.toString().trim();
 
-  if (selectedText && event.button === 0) {
-    removeIcon();
-
-    requestAnimationFrame(() => {
-      const range = selection.getRangeAt(0);
-      const rect = range.getBoundingClientRect();
-      const x = event.clientX;
-      const y = event.clientY;
-
-      currentIcon = createIcon(x + 5, y - 25);
-
-      currentIcon.addEventListener("mousedown", function(e) {
-        handleIconClick(e, selectedText, rect, selection);
-      }, { passive: false });
-
-      document.body.appendChild(currentIcon);
+  // 使用updateSelectionUI来处理所有UI更新
+  if (selection && event.button === 0) {
+    updateSelectionUI(selection).catch(error => {
+      console.error('Error updating selection UI:', error);
     });
   }
 }, { passive: true });
@@ -309,8 +319,14 @@ document.addEventListener("mouseup", function (event) {
 document.addEventListener("mousedown", function(e) {
   if (isHandlingIconClick) return;
 
-  if (currentIcon && !currentIcon.contains(e.target)) {
+  const isClickOnButtons = (
+    (currentIcon && currentIcon.contains(e.target)) ||
+    (currentQuickActions && currentQuickActions.contains(e.target))
+  );
+
+  if (!isClickOnButtons) {
     removeIcon();
+    removeQuickActions();
     if (e.button === 0) {
       window.getSelection().removeAllRanges();
     }
@@ -380,5 +396,82 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
   } else if (request.action === "getSelectedText") {
     sendResponse({ selectedText });
+  }
+});
+
+function handleQuickAction(action, text) {
+  const rect = window.getSelection().getRangeAt(0).getBoundingClientRect();
+  const messages = [
+    {
+      role: "user",
+      content: text,
+    }
+  ];
+
+  // 先移除按钮容器
+  removeQuickActions();
+  // 清除选中的文本
+  window.getSelection().removeAllRanges();
+
+  // 对于翻译操作，如果没有指定语言，默认使用中文
+  let prompt = action.prompt;
+  if (action.id === 'translate' && !prompt.includes('简体中文')) {
+    prompt = action.prompt.replace('{language}', '简体中文');
+  }
+
+  // 然后显示弹窗，传递处理后的 prompt
+  handlePopupCreation(text, rect, false, messages, prompt);
+}
+
+async function updateSelectionUI(selection) {
+  if (!isSelectionEnabled || !selection || selection.isCollapsed) {
+    removeQuickActions();
+    return;
+  }
+
+  const range = selection.getRangeAt(0);
+  const rect = range.getBoundingClientRect();
+  selectedText = selection.toString().trim();
+
+  if (!selectedText) {
+    removeQuickActions();
+    return;
+  }
+
+  // 计算按钮容器位置 - 在选中文本下方
+  const containerX = rect.left + window.scrollX;
+  const containerY = rect.bottom + window.scrollY + 5; // 在文本下方5px的位置
+
+  if (!currentQuickActions) {
+    currentQuickActions = await createQuickActionButtons(
+      selectedText,
+      handleQuickAction,
+      handleIconClick
+    );
+    document.body.appendChild(currentQuickActions);
+  }
+
+  Object.assign(currentQuickActions.style, {
+    position: 'absolute',
+    left: `${containerX}px`,
+    top: `${containerY}px`,
+  });
+}
+
+function removeQuickActions() {
+  if (currentQuickActions && document.body.contains(currentQuickActions)) {
+    document.body.removeChild(currentQuickActions);
+    currentQuickActions = null;
+  }
+}
+
+// 添加全局点击事件监听，用于关闭语言选择菜单
+document.addEventListener('click', (e) => {
+  const languageSelect = document.querySelector('.language-select');
+  if (languageSelect && languageSelect.style.display === 'block') {
+    const isClickInside = e.target.closest('.quick-action-translate');
+    if (!isClickInside) {
+      languageSelect.style.display = 'none';
+    }
   }
 });

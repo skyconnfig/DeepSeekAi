@@ -50,7 +50,6 @@ async function processRenderQueue(responseElement, ps, aiResponseContainer) {
     while (renderQueue.length > 0) {
       // 检查元素是否仍然存在于 DOM 中
       if (!responseElement || !responseElement.isConnected || !aiResponseContainer || !aiResponseContainer.isConnected) {
-        console.log('Response element or container was removed from DOM, clearing render queue');
         renderQueue = [];
         break;
       }
@@ -144,7 +143,8 @@ export async function getAIResponse(
   aiResponseContainer,
   isRefresh = false,
   onComplete,
-  isGreeting = false  // 新增参数，用于标识是否是问候语
+  isGreeting = false,
+  quickActionPrompt = ''
 ) {
   if (!text) return;
 
@@ -226,7 +226,6 @@ export async function getAIResponse(
     }
 
     const requestBody = {
-      // 当文本是 getGreeting() 生成的问候语时使用 V3 模型
       model: (text === "Good morning 👋" || text === "Good afternoon 👋" || text === "Good evening 👋")
         ? "deepseek-chat"
         : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"),
@@ -234,19 +233,19 @@ export async function getAIResponse(
         {
           role: "system",
           content: `You are a helpful AI assistant. ${
-            language === "auto"
-              ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc."
-              : `You MUST respond ONLY in ${language}. This is a strict requirement. Do not use any other language except ${language}.`
+            quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
+              ? quickActionPrompt
+              : language === "auto"
+                ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc.${quickActionPrompt}"
+                : `You MUST respond ONLY in ${language}. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`
           }`,
         },
-        ...messages // 使用完整的消息历史
+        ...messages
       ],
       stream: true,
       temperature: 0.5,
     };
 
-    // 添加日志
-    console.log('Request body:', JSON.stringify(requestBody, null, 2));
 
     const response = await fetch("https://api.deepseek.com/chat/completions", {
       method: "POST",
@@ -268,11 +267,15 @@ export async function getAIResponse(
     let aiResponse = "";
     let reasoningContent = "";
     let lastProcessTime = performance.now();
+    let lastResponseTime = Date.now();
 
     try {
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
+
+        // 更新最后响应时间
+        lastResponseTime = Date.now();
 
         const chunk = decoder.decode(value, { stream: true });
         const lines = chunk.split("\n\n");
@@ -280,7 +283,9 @@ export async function getAIResponse(
         for (const line of lines) {
           if (line.startsWith("data: ")) {
             const jsonLine = line.slice(6);
-            if (jsonLine === "[DONE]") break;
+            if (jsonLine === "[DONE]") {
+              break;
+            }
 
             try {
               const data = JSON.parse(jsonLine);
@@ -302,6 +307,7 @@ export async function getAIResponse(
                 reasoningContent: model === "r1" ? reasoningContent : "",
                 content: aiResponse
               });
+
 
               // 性能优化：控制渲染频率
               const currentTime = performance.now();
@@ -329,8 +335,6 @@ export async function getAIResponse(
     // 更新消息历史（只保存最终答案，不保存思维链）
     if (currentContent) {
       messages.push({ role: "assistant", content: currentContent });
-      // 打印当前消息历史,用于调试
-      console.log('Current messages history:', JSON.stringify(messages, null, 2));
     }
 
     // 使用 requestIdleCallback 优化图标更新
@@ -400,7 +404,7 @@ function handleError(status, responseElement) {
     500: "Internal server error, please try again later.",
     503: "Server overload, please try again later."
   };
-  const textNode = document.createTextNode(errorMessages[status] || "请求失败，请稍后重试。");
+  const textNode = document.createTextNode(errorMessages[status] || "Request failed, please try again later.");
   responseElement.textContent = "";
   responseElement.appendChild(textNode);
 }

@@ -24,27 +24,26 @@ export function createIcon(x, y) {
   return icon;
 }
 
-export function createSvgIcon(text, title) {
+export function createSvgIcon(iconName, title) {
   const wrapper = document.createElement("div");
   wrapper.className = "icon-wrapper tooltip";
   wrapper.style.display = "inline-block";
 
   const icon = document.createElement("img");
-  icon.style.width = "15px";
-  icon.style.height = "15px";
-  icon.src = chrome.runtime.getURL(`icons/${text}.svg`);
+  icon.style.width = "18px";
+  icon.style.height = "18px";
+  icon.src = chrome.runtime.getURL(`icons/${iconName}.svg`);
   icon.style.border = "none";
   icon.style.cursor = "pointer";
   icon.style.transition = "transform 0.5s ease";
 
   icon.addEventListener("mousedown", () => {
-    icon.src = chrome.runtime.getURL(`icons/${text}Clicked.svg`);
     icon.style.transform = "scale(1.2)";
   });
 
   icon.addEventListener("mouseup", () => {
     icon.style.transform = "scale(1)";
-    icon.src = chrome.runtime.getURL(`icons/${text}.svg`);
+    icon.src = chrome.runtime.getURL(`icons/${iconName}.svg`);
   });
 
   const tooltip = document.createElement("span");

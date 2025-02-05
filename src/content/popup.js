@@ -72,7 +72,7 @@ const getPopupInitialStyle = (rect) => ({
   ...adjustPopupPosition(rect)
 });
 
-export function createPopup(text, rect, hideQuestion = false, removeCallback) {
+export function createPopup(selectedText, rect, hideQuestion = false, removeCallback, messages = null, quickActionPrompt = null) {
   // 确保移除快捷按钮
   if (window.currentIcon && document.body.contains(window.currentIcon)) {
     document.body.removeChild(window.currentIcon);
@@ -104,7 +104,7 @@ export function createPopup(text, rect, hideQuestion = false, removeCallback) {
     const userQuestionDiv = document.createElement('div');
     userQuestionDiv.className = 'user-question';
     const userQuestionP = document.createElement('p');
-    userQuestionP.textContent = text;
+    userQuestionP.textContent = selectedText;
     userQuestionDiv.appendChild(userQuestionP);
     addIconsToElement(userQuestionDiv);
     aiResponseElement.appendChild(userQuestionDiv);
@@ -157,12 +157,16 @@ export function createPopup(text, rect, hideQuestion = false, removeCallback) {
 
   let abortController = new AbortController();
   getAIResponse(
-    text,
+    selectedText,
     initialAnswerElement,
-    abortController.signal,
+    { controller: abortController },
     ps,
     null,
-    window.aiResponseContainer
+    window.aiResponseContainer,
+    false,
+    null,
+    false,
+    quickActionPrompt
   );
 
   const dragHandle = createDragHandle(removeCallback);

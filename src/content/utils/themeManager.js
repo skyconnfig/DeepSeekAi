@@ -113,9 +113,11 @@ export function applyTheme(popup, isDark) {
     if (isDark) {
       popup.classList.add('dark-mode');
       popup.classList.remove('light-mode');
+      popup.setAttribute('data-theme', 'dark');
     } else {
       popup.classList.remove('dark-mode');
       popup.classList.add('light-mode');
+      popup.setAttribute('data-theme', 'light');
     }
   });
 }

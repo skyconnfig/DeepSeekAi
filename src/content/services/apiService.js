@@ -172,7 +172,7 @@ export async function getAIResponse(
       ? quickActionPrompt
       : language === "auto"
         ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc."
-        : `You MUST respond ONLY in ${language}. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`;
+        : `You MUST respond ONLY in ${language}.Including your reasoningContent language. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`;
 
     const apiUrl = provider === 'volcengine'
       ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'

@@ -17,7 +17,7 @@
 
 DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://deepseek.com) API, designed to enhance your web browsing experience with intelligent interactions. Through simple text selection, you can instantly receive AI-driven responses, making your web browsing more efficient and intelligent.
 
-> **Note**: This extension is a third-party development, not an official DeepSeek product. You need your own DeepSeek API Key to use this extension.
+> **Note**: This extension is a third-party development, not an official DeepSeek product. You need your own DeepSeek API Key to use this extension. We support both [DeepSeek](https://deepseek.com) API and [ByteDance Volcengine](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API.
 
 ## ✨ Core Features
 
@@ -27,13 +27,14 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 - **Quick Access**: Three ways to invoke the chat window - text selection, right-click menu, and keyboard shortcuts
 - **Streaming Response**: Real-time streaming display of AI responses
 - **Model Selection**: Choose between DeepSeek V3 and DeepSeek R1 models
+- **API Provider**: Support both DeepSeek official API and ByteDance Volcengine DeepSeek API
 
 ### 💎 User Experience
 - **Draggable Interface**: Freely drag and resize the chat window
 - **Window Memory**: Remember chat window size and position
 - **One-click Copy**: Easy copying of response content
 - **Regenerate**: Support for regenerating AI responses
-- **Keyboard Shortcuts**: Built-in shortcut (Ctrl/Command+Shift+D to open/close)
+- **Keyboard Shortcuts**: Support custom shortcuts to directly pop up the chat window.
 - **Balance Query**: Real-time API balance checking
 - **User Guide**: Built-in detailed usage instructions
 
@@ -71,8 +72,7 @@ pnpm run build
 4. Start using! You can:
    - Click the popup icon after selecting text
    - Right-click and select "DeepSeek AI" after text selection
-   - Use the shortcut Ctrl/Command+Shift+D to open the dialog window/close the session window.
-
+   - Use custom open dialog window/close session window
 ## 🛠️ Tech Stack
 
 - **Frontend Framework**: JavaScript

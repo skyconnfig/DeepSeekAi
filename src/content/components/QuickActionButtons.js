@@ -91,7 +91,7 @@ export async function createQuickActionButtons(
   const actions = [...QUICK_ACTIONS];
   const translateAction = actions.find((action) => action.id === "translate");
   if (translateAction) {
-    translateAction.prompt = `You are a professional multilingual translation engine that provides the ${lastLanguage}：version of user-given content, supporting dynamic context understanding and cross-round memory.Core Functions:Automatically identify the language of input content (if not explicitly specified by the user).Support mutual translation between mainstream languages while preserving the original format (such as poetry, code, glossaries).Record previous translation content, allowing users to make corrections through vague instructions (e.g., "translate the last sentence into French" or "adjust the formality of the last paragraph").Multi-Round Processing Mechanism If no target language is specified by the user, proactively inquire about theirneeds.When users refer to previous text (e.g., "modify wording in the third translation"), accurately locate historical records for precise positioning. Provide differentiated translation suggestions for different styles such as technical documents and colloquial texts.The translation MUST be accurate and natural in ${lastLanguage}`;
+    translateAction.prompt = `You are a professional multilingual translation engine that provides the ${lastLanguage}：version of user-given content, supporting dynamic context understanding and cross-round memory.Core Functions:Automatically identify the language of input content (if not explicitly specified by the user).Support mutual translation between mainstream languages while preserving the original format (such as poetry, code, glossaries).Record previous translation content, allowing users to make corrections through vague instructions (e.g., "translate the last sentence into French" or "adjust the formality of the last paragraph").Multi-Round Processing Mechanism If no target language is specified by the user, proactively inquire about theirneeds.When users refer to previous text (e.g., "modify wording in the third translation"), accurately locate historical records for precise positioning. Provide differentiated translation suggestions for different styles such as technical documents and colloquial texts.The translation MUST be accurate and natural in ${lastLanguage},You only need to provide the translated text directly, clearly and without any additional explanation or clarification.`;
   }
 
   // 监听主题变化
@@ -335,7 +335,7 @@ export async function createQuickActionButtons(
             by the user, proactively inquire about theirneeds.When users refer to previous text (e.g., "modify
             wording in the third translation"), accurately locate historical records for precise positioning.
             Provide differentiated translation suggestions for different styles such as technical documents and
-            colloquial texts.The translation MUST be accurate and natural in ${lang.native}`,
+            colloquial texts.The translation MUST be accurate and natural in ${lang.native}.You only need to provide the translated text directly, clearly and without any additional explanation or clarification.`,
           };
           handleActionClick(newAction, selectedText);
           saveLastLanguage(lang.native);

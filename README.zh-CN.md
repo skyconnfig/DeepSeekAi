@@ -17,7 +17,7 @@
 
 DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https://deepseek.com) API，为用户提供智能的网页交互体验。通过简单的文本选择，即可获得 AI 驱动的实时响应，让您的网页浏览体验更加智能和高效。
 
-> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。
+> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们同时支持 [DeepSeek](https://deepseek.com) API 和[字节跳动火山引擎](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API。
 
 ## ✨ 核心特性
 
@@ -27,13 +27,14 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 - **快捷操作**: 支持文本选择、右键菜单和快捷键三种方式唤起对话窗口
 - **流式响应**: AI 回复实时流式显示，提供即时反馈 
 - **模型选择**: 支持选择 DeepSeek V3 和 DeepSeek R1 模型
+- **API 提供商**: 同时支持 DeepSeek 官方 API 和字节跳动火山引擎 DeepSeek API
 
 ### 💎 用户体验
 - **可拖拽界面**: 对话窗口支持自由拖拽和大小调整
 - **窗口记忆**: 支持记住对话窗口的大小和位置
 - **一键复制**: 便捷的回复内容复制功能
 - **重新生成**: 支持重新生成 AI 回复
-- **快捷键支持**: 内置快捷键（Ctrl/Command+Shift+D 打开/关闭）
+- **快捷键支持**: 支持自定义快捷键直接弹出会话窗口
 - **余额查询**: 支持实时查询 API 余额
 - **使用说明**: 内置详细的使用教程
 
@@ -71,7 +72,7 @@ pnpm run build
 4. 开始使用！您可以：
    - 选择网页文本后点击弹出的图标
    - 选择文本后右键选择 "DeepSeek AI"
-   - 使用快捷键 Ctrl/Command+Shift+D 打开对话窗口/关闭会话窗口
+   - 使用自定义打开对话窗口/关闭会话窗口
    
 
 ## 🛠️ 技术栈

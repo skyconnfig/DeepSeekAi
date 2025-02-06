@@ -159,7 +159,7 @@ class PopupManager {
     const providerUrls = {
       'deepseek': 'https://platform.deepseek.com/api_keys',
       'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
-      'siliconflow': 'https://cloud.siliconflow.cn/account/ak?referrer=clxty1xuy0014lvqwh5z50i88'
+      'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH'
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
   }

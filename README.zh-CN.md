@@ -17,7 +17,7 @@
 
 DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https://deepseek.com) API，为用户提供智能的网页交互体验。通过简单的文本选择，即可获得 AI 驱动的实时响应，让您的网页浏览体验更加智能和高效。
 
-> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们同时支持 [DeepSeek](https://deepseek.com) API、[字节跳动火山引擎](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API 和[硅基流动](https://cloud.siliconflow.cn/models) DeepSeek API。
+> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们同时支持 [DeepSeek](https://deepseek.com) API、[字节跳动火山引擎](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API 和[硅基流动](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API。
 
 ## ✨ 核心特性
 

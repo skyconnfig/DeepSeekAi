@@ -17,7 +17,7 @@
 
 DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://deepseek.com) API, designed to enhance your web browsing experience with intelligent interactions. Through simple text selection, you can instantly receive AI-driven responses, making your web browsing more efficient and intelligent.
 
-> **Note**: This extension is a third-party development, not an official DeepSeek product. You need your own DeepSeek API Key to use this extension. We support [DeepSeek](https://deepseek.com) API, [ByteDance Volcengine](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API and [SiliconFlow](https://cloud.siliconflow.cn/models?mfs=deepseek-ai) DeepSeek API.
+> **Note**: This extension is a third-party development, not an official DeepSeek product. You need your own DeepSeek API Key to use this extension. We support [DeepSeek](https://deepseek.com) API, [ByteDance Volcengine](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API and [SiliconFlow](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API.
 
 ## ✨ Core Features
 

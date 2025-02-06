@@ -356,7 +356,7 @@ const translations = {
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "Volcengine Models Configuration",
     volcengineProvider: "Volcano Engine",
-    siliconflowProvider: "Silicon Flow"
+    siliconflowProvider: "SiliconFlow"
   },
 };
 

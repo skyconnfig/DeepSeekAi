@@ -3,11 +3,12 @@
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
     chrome.storage.sync.get(
-      ["deepseekApiKey", "volcengineApiKey", "language", "model", "provider", "v3model", "r1model"],
+      ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "language", "model", "provider", "v3model", "r1model"],
       (data) => {
         sendResponse({
           deepseekApiKey: data.deepseekApiKey || '',
           volcengineApiKey: data.volcengineApiKey || '',
+          siliconflowApiKey: data.siliconflowApiKey || '',
           language: data.language || 'en',
           model: data.model || 'v3',
           provider: data.provider || 'deepseek',
@@ -30,6 +31,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       signal
     })
     .then(async response => {
+      // 如果不是流式响应，直接返回状态
+      if (!request.body.includes('"stream":true')) {
+        sendResponse({
+          status: response.status,
+          ok: response.ok
+        });
+        return;
+      }
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -42,10 +52,12 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           const { done, value } = await reader.read();
 
           if (done) {
-            chrome.tabs.sendMessage(sender.tab.id, {
-              type: "streamResponse",
-              response: { data: 'data: [DONE]\n\n', ok: true, done: true }
-            });
+            if (sender?.tab?.id) {
+              chrome.tabs.sendMessage(sender.tab.id, {
+                type: "streamResponse",
+                response: { data: 'data: [DONE]\n\n', ok: true, done: true }
+              });
+            }
             break;
           }
 
@@ -58,32 +70,38 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
             const data = line.slice(6);
             if (data === '[DONE]') {
-              chrome.tabs.sendMessage(sender.tab.id, {
-                type: "streamResponse",
-                response: { data: 'data: [DONE]\n\n', ok: true, done: true }
-              });
+              if (sender?.tab?.id) {
+                chrome.tabs.sendMessage(sender.tab.id, {
+                  type: "streamResponse",
+                  response: { data: 'data: [DONE]\n\n', ok: true, done: true }
+                });
+              }
               break;
             }
 
-            chrome.tabs.sendMessage(sender.tab.id, {
-              type: "streamResponse",
-              response: { data: line + '\n\n', ok: true, done: false }
-            });
+            if (sender?.tab?.id) {
+              chrome.tabs.sendMessage(sender.tab.id, {
+                type: "streamResponse",
+                response: { data: line + '\n\n', ok: true, done: false }
+              });
+            }
           }
         }
       } catch (error) {
-        chrome.tabs.sendMessage(sender.tab.id, {
-          type: "streamResponse",
-          response: { ok: false, error: error.message }
-        });
+        if (sender?.tab?.id) {
+          chrome.tabs.sendMessage(sender.tab.id, {
+            type: "streamResponse",
+            response: { ok: false, error: error.message }
+          });
+        }
       } finally {
         reader.releaseLock();
       }
     })
     .catch(error => {
-      chrome.tabs.sendMessage(sender.tab.id, {
-        type: "streamResponse",
-        response: { ok: false, error: error.message }
+      sendResponse({
+        ok: false,
+        error: error.message
       });
     });
 

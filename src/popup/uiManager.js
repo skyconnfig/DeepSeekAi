@@ -35,7 +35,7 @@ export class UiManager {
 
     messageContainer.insertBefore(messageDiv, messageContainer.firstChild);
 
-    if (!message.includes('loading')) {
+    if (!message.includes('验证') && !message.includes('Validating')) {
       setTimeout(() => {
         messageDiv.remove();
       }, 2000);

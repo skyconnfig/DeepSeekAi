@@ -2,11 +2,12 @@ export class StorageManager {
   async getSettings() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(
-        ["deepseekApiKey", "volcengineApiKey", "language", "model", "provider", "v3model", "r1model", "selectionEnabled", "rememberWindowSize", "pinWindow"],
+        ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "language", "model", "provider", "v3model", "r1model", "selectionEnabled", "rememberWindowSize", "pinWindow"],
         (data) => {
           resolve({
             deepseekApiKey: data.deepseekApiKey || '',
             volcengineApiKey: data.volcengineApiKey || '',
+            siliconflowApiKey: data.siliconflowApiKey || '',
             language: data.language || 'en',
             model: data.model || 'v3',
             provider: data.provider || 'deepseek',
@@ -21,15 +22,10 @@ export class StorageManager {
     });
   }
 
-  async saveDeepseekApiKey(apiKey) {
+  async saveApiKey(provider, apiKey) {
+    const key = `${provider}ApiKey`;
     return new Promise((resolve) => {
-      chrome.storage.sync.set({ deepseekApiKey: apiKey }, resolve);
-    });
-  }
-
-  async saveVolcengineApiKey(apiKey) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set({ volcengineApiKey: apiKey }, resolve);
+      chrome.storage.sync.set({ [key]: apiKey }, resolve);
     });
   }
 

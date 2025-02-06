@@ -886,6 +886,15 @@
       </div>
 
       <div class="key">
+        <div class="language-switch">
+          <label for="provider" id="providerLabel">Service Provider</label>
+          <select id="provider">
+            <option value="deepseek">DeepSeek</option>
+            <option value="volcengine" id="volcengineProvider">Volcano Engine</option>
+            <option value="siliconflow" id="siliconflowProvider">Silicon Flow</option>
+          </select>
+        </div>
+
         <div class="key-header">
           <a
             href="https://platform.deepseek.com/api_keys"
@@ -897,15 +906,6 @@
           >
             Get API Key
           </a>
-        </div>
-
-        <div class="language-switch">
-          <label for="provider" id="providerLabel">Service Provider</label>
-          <select id="provider">
-            <option value="deepseek">DeepSeek</option>
-            <option value="volcengine" id="volcengineProvider">Volcano Engine</option>
-          </select>
-
         </div>
 
         <div class="error-message" id="errorMessage"></div>

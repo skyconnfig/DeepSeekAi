@@ -21,7 +21,7 @@ class PopupManager {
     const currentProvider = settings.provider || 'deepseek';
 
     // 根据当前服务商设置API key
-    const apiKey = currentProvider === 'volcengine' ? settings.volcengineApiKey : settings.deepseekApiKey;
+    const apiKey = await this.apiKeyManager.getApiKey(currentProvider);
     if (apiKey) {
       this.uiManager.setApiKeyValue(apiKey);
       this.apiKeyManager.lastValidatedValue = apiKey;
@@ -61,12 +61,14 @@ class PopupManager {
     // Provider selection
     this.uiManager.elements.providerSelect.addEventListener(
       "change",
-      (e) => {
+      async (e) => {
         const provider = e.target.value;
-        this.storageManager.saveProvider(provider);
+        await this.storageManager.saveProvider(provider);
         this.updateProviderUI(provider);
-        // 切换服务商时设置对应的API key
-        this.loadProviderApiKey(provider);
+        // 切换服务商时加载对应的API key
+        const apiKey = await this.apiKeyManager.getApiKey(provider);
+        this.uiManager.setApiKeyValue(apiKey || '');
+        this.apiKeyManager.lastValidatedValue = apiKey || '';
       }
     );
 
@@ -154,37 +156,53 @@ class PopupManager {
 
     // 更新 API Key 链接
     const apiKeyLink = document.getElementById('apiKeyLink');
-    const targetUrl = apiKeyLink.getAttribute(`data-${provider}`);
-    apiKeyLink.href = targetUrl;
+    const providerUrls = {
+      'deepseek': 'https://platform.deepseek.com/api_keys',
+      'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
+      'siliconflow': 'https://cloud.siliconflow.cn/account/ak?referrer=clxty1xuy0014lvqwh5z50i88'
+    };
+    apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
   }
 
   async handleApiKeyValidation() {
     const apiKey = this.uiManager.getApiKeyValue();
     const provider = this.uiManager.elements.providerSelect.value;
 
-    if (apiKey === "" || apiKey === this.apiKeyManager.lastValidatedValue) {
+    if (!apiKey) {
+      this.uiManager.showMessage(
+        this.i18nManager.getTranslation('apiKeyEmpty'),
+        false
+      );
       return;
     }
 
+    // 显示验证中的消息
     this.uiManager.showMessage(
       this.i18nManager.getTranslation('validating'),
       true
     );
 
-    const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider);
+    try {
+      const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider);
 
-    if (isValid) {
-      await this.apiKeyManager.saveApiKey(apiKey, provider);
-      this.uiManager.showMessage(
-        this.i18nManager.getTranslation('saveSuccess'),
-        true
-      );
-      if (provider === 'deepseek') {
-        this.handleBalanceRefresh();
+      if (isValid) {
+        this.uiManager.showMessage(
+          this.i18nManager.getTranslation('saveSuccess'),
+          true
+        );
+        if (provider === 'deepseek') {
+          this.handleBalanceRefresh();
+        }
+      } else {
+        this.uiManager.showMessage(
+          this.i18nManager.getTranslation('apiKeyInvalid'),
+          false
+        );
       }
-    } else {
+    } catch (error) {
+      console.error('API validation error:', error);
       this.uiManager.showMessage(
-        this.i18nManager.getTranslation('apiKeyInvalid'),
+        this.i18nManager.getTranslation('fetchError'),
         false
       );
     }
@@ -240,12 +258,24 @@ class PopupManager {
     });
   }
 
-  async loadProviderApiKey(provider) {
-    const settings = await this.storageManager.getSettings();
-    const apiKey = provider === 'volcengine' ? settings.volcengineApiKey : settings.deepseekApiKey;
-    if (apiKey) {
-      this.uiManager.setApiKeyValue(apiKey);
-      this.apiKeyManager.lastValidatedValue = apiKey;
+  async validateAndSaveApiKey(apiKey, provider) {
+    if (!apiKey) {
+      this.uiManager.showMessage(this.i18nManager.getTranslation('apiKeyEmpty'), false);
+      return;
+    }
+
+    try {
+      const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider);
+
+      if (isValid) {
+        this.uiManager.showMessage(this.i18nManager.getTranslation('saveSuccess'), true);
+        await this.loadApiKey(provider);
+      } else {
+        this.uiManager.showMessage(this.i18nManager.getTranslation('apiKeyInvalid'), false);
+      }
+    } catch (error) {
+      console.error('Validation error:', error);
+      this.uiManager.showMessage(this.i18nManager.getTranslation('fetchError'), false);
     }
   }
 }
@@ -286,11 +316,12 @@ const translations = {
     pinWindowTip: "开启后，点击窗口外部不会自动关闭会话窗口",
     warningMessage: "DeepSeek近期一直在遭受大规模网络攻击，部分网站和API服务可能暂时无法正常使用，请等待官方恢复",
     // 火山引擎相关
-    getModelId: "获取 Model ID",
+    getModelId: "获取模型ID（必填）",
     v3ModelLabel: "V3 Model ID:",
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "火山引擎模型配置",
-    volcengineProvider: "火山引擎"
+    volcengineProvider: "火山引擎",
+    siliconflowProvider: "硅基流动"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -320,11 +351,12 @@ const translations = {
     pinWindowTip: "When enabled, clicking outside the window won't close it",
     warningMessage: "DeepSeek is currently experiencing large-scale network attacks. Some website and API services may be temporarily unavailable.",
     // Volcengine related
-    getModelId: "Get Model ID",
+    getModelId: "Get Model ID(required)",
     v3ModelLabel: "V3 Model ID:",
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "Volcengine Models Configuration",
-    volcengineProvider: "Volcano Engine"
+    volcengineProvider: "Volcano Engine",
+    siliconflowProvider: "Silicon Flow"
   },
 };
 
@@ -365,7 +397,8 @@ const updateContent = () => {
     'v3ModelLabel': langData.v3ModelLabel,
     'r1ModelLabel': langData.r1ModelLabel,
     'volcengineModelsTitle': langData.volcengineModelsTitle,
-    'volcengineProvider': langData.volcengineProvider
+    'volcengineProvider': langData.volcengineProvider,
+    'siliconflowProvider': langData.siliconflowProvider
   };
 
   // 批量更新DOM

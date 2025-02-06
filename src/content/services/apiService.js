@@ -134,7 +134,9 @@ export async function getAIResponse(
     });
 
     const provider = settings.provider || 'deepseek';
-    const apiKey = provider === 'volcengine' ? settings.volcengineApiKey : settings.deepseekApiKey;
+    const apiKey = provider === 'volcengine' ? settings.volcengineApiKey :
+                  provider === 'siliconflow' ? settings.siliconflowApiKey :
+                  settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
     const v3model = settings.v3model;
@@ -166,6 +168,8 @@ export async function getAIResponse(
 
     const modelName = provider === 'volcengine'
       ? (model === 'r1' ? r1model : v3model)
+      : provider === 'siliconflow'
+      ? (model === 'r1' ? 'deepseek-ai/DeepSeek-R1' : 'deepseek-ai/DeepSeek-V3')
       : (isGreeting ? "deepseek-chat" : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"));
 
     const systemPrompt = quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
@@ -176,6 +180,8 @@ export async function getAIResponse(
 
     const apiUrl = provider === 'volcengine'
       ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
+      : provider === 'siliconflow'
+      ? 'https://api.siliconflow.cn/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
     const response = await new Promise((resolve, reject) => {

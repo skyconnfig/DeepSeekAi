@@ -14,7 +14,7 @@ export class ApiKeyManager {
         },
         'volcengine': {
           url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-          model: settings?.model === 'v3' ? settings?.v3model : settings?.r1model
+          model: settings?.v3model || settings?.r1model
         },
         'siliconflow': {
           url: 'https://api.siliconflow.cn/v1/chat/completions',
@@ -25,7 +25,7 @@ export class ApiKeyManager {
       const config = providerConfig[provider];
       if (!config) return false;
 
-      // 检查火山引擎的Model ID
+      // 检查火山引擎的Model ID，只检查当前选择的模型
       if (provider === 'volcengine' && !config.model) {
         return false;
       }

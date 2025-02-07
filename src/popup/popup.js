@@ -178,18 +178,18 @@ class PopupManager {
 
     // 检查火山引擎的Model ID
     if (provider === 'volcengine') {
-      const currentModel = this.uiManager.elements.modelSelect.value;
-      const modelId = currentModel === 'v3'
-        ? this.uiManager.elements.v3modelInput.value
-        : this.uiManager.elements.r1modelInput.value;
+      const v3modelId = this.uiManager.elements.v3modelInput.value;
+      const r1modelId = this.uiManager.elements.r1modelInput.value;
 
-      if (!modelId) {
+      if (!v3modelId && !r1modelId) {
         this.uiManager.showMessage(
           this.i18nManager.getTranslation('modelIdRequired'),
           false
         );
         return;
       }
+
+
     }
 
     // 显示验证中的消息

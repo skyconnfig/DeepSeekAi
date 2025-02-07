@@ -8,7 +8,8 @@ export class I18nManager {
         noBalance: '暂无余额',
         noApiKey: '请先设置 API Key',
         fetchError: '获取失败',
-        rememberWindowSize: '保存窗口大小'
+        rememberWindowSize: '保存窗口大小',
+        modelIdRequired: '请先填写Model ID'
       },
       en: {
         validating: 'Validating...',
@@ -17,7 +18,8 @@ export class I18nManager {
         noBalance: 'No balance',
         noApiKey: 'Please set API Key first',
         fetchError: 'Failed to fetch',
-        rememberWindowSize: 'Save window size'
+        rememberWindowSize: 'Save window size',
+        modelIdRequired: 'Please enter Model ID first'
       }
     };
   }

@@ -176,6 +176,22 @@ class PopupManager {
       return;
     }
 
+    // 检查火山引擎的Model ID
+    if (provider === 'volcengine') {
+      const currentModel = this.uiManager.elements.modelSelect.value;
+      const modelId = currentModel === 'v3'
+        ? this.uiManager.elements.v3modelInput.value
+        : this.uiManager.elements.r1modelInput.value;
+
+      if (!modelId) {
+        this.uiManager.showMessage(
+          this.i18nManager.getTranslation('modelIdRequired'),
+          false
+        );
+        return;
+      }
+    }
+
     // 显示验证中的消息
     this.uiManager.showMessage(
       this.i18nManager.getTranslation('validating'),
@@ -183,7 +199,13 @@ class PopupManager {
     );
 
     try {
-      const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider);
+      const settings = {
+        model: this.uiManager.elements.modelSelect.value,
+        v3model: this.uiManager.elements.v3modelInput.value,
+        r1model: this.uiManager.elements.r1modelInput.value
+      };
+
+      const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider, settings);
 
       if (isValid) {
         this.uiManager.showMessage(

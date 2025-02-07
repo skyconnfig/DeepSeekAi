@@ -17,7 +17,6 @@ export function getIsGenerating() {
   return isGenerating;
 }
 
-// 移除不必要的防抖处理
 const processText = (text, type) => {
   if (type === 'cleanup') {
     return text.trim().replace(/\s+/g, ' ');
@@ -172,6 +171,35 @@ export async function getAIResponse(
       ? (model === 'r1' ? 'deepseek-ai/DeepSeek-R1' : 'deepseek-ai/DeepSeek-V3')
       : (isGreeting ? "deepseek-chat" : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"));
 
+    // 检查火山引擎的Model ID
+    if (provider === 'volcengine') {
+      const requiredModel = model === 'r1' ? r1model : v3model;
+      if (!requiredModel) {
+        const modelType = model === 'r1' ? 'R1' : 'V3';
+        const linkElement = document.createElement("a");
+        linkElement.href = "#";
+        linkElement.textContent = `Please configure the ${modelType} Model ID in the extension settings first.`;
+        linkElement.style.color = "#0066cc";
+        linkElement.style.textDecoration = "underline";
+        linkElement.style.cursor = "pointer";
+        linkElement.addEventListener("click", async (e) => {
+          e.preventDefault();
+          try {
+            await chrome.runtime.sendMessage({ action: "openPopup" });
+          } catch (error) {
+            console.error('Failed to open popup:', error);
+            chrome.runtime.sendMessage({ action: "getSelectedText" });
+          }
+        });
+        responseElement.textContent = "";
+        responseElement.appendChild(linkElement);
+        if (existingIconContainer) {
+          responseElement.appendChild(existingIconContainer);
+        }
+        return;
+      }
+    }
+
     const systemPrompt = quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
       ? quickActionPrompt
       : language === "auto"
@@ -263,6 +291,7 @@ export async function getAIResponse(
 
       chrome.runtime.onMessage.addListener(messageListener);
 
+
       chrome.runtime.sendMessage({
         action: "proxyRequest",
         url: apiUrl,
@@ -286,7 +315,6 @@ export async function getAIResponse(
     if (currentContent) {
       messages.push({ role: "assistant", content: currentContent });
     }
-    console.log(messages)
     requestIdleCallback(() => {
       if (window.addIconsToElement) {
         window.addIconsToElement(responseElement);

@@ -3,7 +3,7 @@ export class ApiKeyManager {
     this.lastValidatedValue = '';
   }
 
-  async validateApiKey(apiKey, provider) {
+  async validateApiKey(apiKey, provider, settings) {
     if (!apiKey) return false;
 
     try {
@@ -14,7 +14,7 @@ export class ApiKeyManager {
         },
         'volcengine': {
           url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-          model: 'ep-20250205172154-ch2p6'
+          model: settings?.model === 'v3' ? settings?.v3model : settings?.r1model
         },
         'siliconflow': {
           url: 'https://api.siliconflow.cn/v1/chat/completions',
@@ -24,6 +24,11 @@ export class ApiKeyManager {
 
       const config = providerConfig[provider];
       if (!config) return false;
+
+      // 检查火山引擎的Model ID
+      if (provider === 'volcengine' && !config.model) {
+        return false;
+      }
 
       const response = await new Promise(resolve => {
         chrome.runtime.sendMessage({

@@ -1,4 +1,5 @@
 // 在文件开头添加调试日志
+const requestControllers = new Map(); // 存储请求控制器
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
@@ -23,6 +24,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "proxyRequest") {
     const controller = new AbortController();
     const signal = controller.signal;
+
+    // 存储控制器
+    if (sender?.tab?.id) {
+      requestControllers.set(sender.tab.id, controller);
+    }
 
     fetch(request.url, {
       method: request.method,
@@ -103,8 +109,24 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         ok: false,
         error: error.message
       });
+    })
+    .finally(() => {
+      // 清理控制器
+      if (sender?.tab?.id) {
+        requestControllers.delete(sender.tab.id);
+      }
     });
 
+    return true;
+  }
+
+  if (request.action === "abortRequest") {
+    const controller = requestControllers.get(sender.tab.id);
+    if (controller) {
+      controller.abort();
+      requestControllers.delete(sender.tab.id);
+    }
+    sendResponse({ success: true });
     return true;
   }
 

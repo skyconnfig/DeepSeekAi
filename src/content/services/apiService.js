@@ -110,6 +110,12 @@ export async function getAIResponse(
   isGenerating = true;
   window.currentAbortController = signal?.controller || new AbortController();
 
+  // 设置中止信号处理
+  window.currentAbortController.signal.addEventListener('abort', () => {
+    // 发送中止请求消息到background
+    chrome.runtime.sendMessage({ action: "abortRequest" });
+  });
+
   if (isRefresh) {
     messages = messages.slice(0, -1);
   }

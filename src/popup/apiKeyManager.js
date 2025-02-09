@@ -19,6 +19,10 @@ export class ApiKeyManager {
         'siliconflow': {
           url: 'https://api.siliconflow.cn/v1/chat/completions',
           model: 'deepseek-ai/DeepSeek-V3'
+        },
+        'openrouter': {
+          url: 'https://openrouter.ai/api/v1/chat/completions',
+          model: 'deepseek/deepseek-chat:free'
         }
       };
 

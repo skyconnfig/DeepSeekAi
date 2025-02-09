@@ -31,7 +31,6 @@ class PopupManager {
     }
 
     this.uiManager.elements.languageSelect.value = settings.language;
-    this.uiManager.elements.modelSelect.value = settings.model;
     this.uiManager.elements.providerSelect.value = currentProvider;
     this.uiManager.elements.selectionEnabled.checked = settings.selectionEnabled;
     this.uiManager.elements.rememberWindowSize.checked = settings.rememberWindowSize;
@@ -41,8 +40,13 @@ class PopupManager {
     if (settings.v3model) this.uiManager.elements.v3modelInput.value = settings.v3model;
     if (settings.r1model) this.uiManager.elements.r1modelInput.value = settings.r1model;
 
-    // 根据provider显示/隐藏相关元素
+    // 根据provider显示/隐藏相关元素并更新model选项
     this.updateProviderUI(currentProvider);
+
+    // 在更新完model选项后，设置保存的model值
+    if (settings.model) {
+      this.uiManager.elements.modelSelect.value = settings.model;
+    }
   }
 
   initializeEventListeners() {
@@ -159,9 +163,58 @@ class PopupManager {
     const providerUrls = {
       'deepseek': 'https://platform.deepseek.com/api_keys',
       'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
-      'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH'
+      'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH',
+      'openrouter': 'https://openrouter.ai/settings/keys'
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
+
+    // 更新model选项
+    this.updateModelOptions(provider);
+  }
+
+  updateModelOptions(provider) {
+    const modelSelect = this.uiManager.elements.modelSelect;
+    const currentValue = modelSelect.value; // 保存当前选中的值
+    modelSelect.innerHTML = ''; // 清空现有选项
+
+    const modelOptions = {
+      'deepseek': [
+        { value: 'deepseek-chat', label: 'DeepSeek V3' },
+        { value: 'deepseek-reasoner', label: 'DeepSeek R1' }
+      ],
+      'siliconflow': [
+        { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek V3' },
+        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek R1' },
+        { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'Pro DeepSeek V3' },
+        { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'Pro DeepSeek R1' },
+      ],
+      'volcengine': [
+        { value: 'v3', label: 'DeepSeek V3' },
+        { value: 'r1', label: 'DeepSeek R1' }
+      ],
+      'openrouter': [
+        { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek V3 Free' },
+        { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek R1 Free' },
+        { value: 'deepseek/deepseek-chat', label: 'DeepSeek V3' },
+        { value: 'deepseek/deepseek-r1', label: 'DeepSeek R1' },
+      ]
+    };
+
+    const options = modelOptions[provider] || [];
+    options.forEach(option => {
+      const optionElement = document.createElement('option');
+      optionElement.value = option.value;
+      optionElement.textContent = option.label;
+      modelSelect.appendChild(optionElement);
+    });
+
+    // 如果当前值在新的选项中存在，则保持选中
+    if (currentValue && options.some(opt => opt.value === currentValue)) {
+      modelSelect.value = currentValue;
+    } else {
+      // 如果当前值不存在，则保存第一个选项
+      this.storageManager.saveModel(modelSelect.value);
+    }
   }
 
   async handleApiKeyValidation() {
@@ -377,7 +430,7 @@ const translations = {
     v3ModelLabel: "V3 Model ID:",
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "Volcengine Models Configuration",
-    volcengineProvider: "Volcano Engine",
+    volcengineProvider: "VolcanoEngine",
     siliconflowProvider: "SiliconFlow"
   },
 };

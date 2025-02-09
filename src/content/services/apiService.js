@@ -141,6 +141,7 @@ export async function getAIResponse(
     const provider = settings.provider || 'deepseek';
     const apiKey = provider === 'volcengine' ? settings.volcengineApiKey :
                   provider === 'siliconflow' ? settings.siliconflowApiKey :
+                  provider === 'openrouter' ? settings.openrouterApiKey :
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
@@ -173,9 +174,7 @@ export async function getAIResponse(
 
     const modelName = provider === 'volcengine'
       ? (model === 'r1' ? r1model : v3model)
-      : provider === 'siliconflow'
-      ? (model === 'r1' ? 'deepseek-ai/DeepSeek-R1' : 'deepseek-ai/DeepSeek-V3')
-      : (isGreeting ? "deepseek-chat" : (model === "r1" ? "deepseek-reasoner" : "deepseek-chat"));
+      : (isGreeting ? "deepseek-chat" : model);
 
     // 检查火山引擎的Model ID
     if (provider === 'volcengine') {
@@ -216,6 +215,8 @@ export async function getAIResponse(
       ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
       : provider === 'siliconflow'
       ? 'https://api.siliconflow.cn/v1/chat/completions'
+      : provider === 'openrouter'
+      ? 'https://openrouter.ai/api/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
     const response = await new Promise((resolve, reject) => {
@@ -258,9 +259,16 @@ export async function getAIResponse(
 
           const data = JSON.parse(jsonLine);
 
-          // 使用 requestAnimationFrame 优化渲染
           requestAnimationFrame(() => {
-            if (model === "r1" && data.choices?.[0]?.delta?.reasoning_content) {
+            if (provider === 'openrouter' && data.choices?.[0]?.delta?.reasoning) {
+              reasoningContent += data.choices[0].delta.reasoning;
+              currentReasoningContent = reasoningContent;
+              renderQueue = [{
+                reasoningContent,
+                content: aiResponse
+              }];
+              processRenderQueue(responseElement, ps, aiResponseContainer);
+            } else if (data.choices?.[0]?.delta?.reasoning_content) {
               reasoningContent += data.choices[0].delta.reasoning_content;
               currentReasoningContent = reasoningContent;
               renderQueue = [{
@@ -269,13 +277,12 @@ export async function getAIResponse(
               }];
               processRenderQueue(responseElement, ps, aiResponseContainer);
             }
-
             if (data.choices?.[0]?.delta?.content) {
               const content = data.choices[0].delta.content;
               aiResponse += content;
               currentContent = aiResponse;
               renderQueue = [{
-                reasoningContent: model === "r1" ? reasoningContent : "",
+                reasoningContent: provider === 'openrouter' || model === "r1" ? reasoningContent : "",
                 content: aiResponse
               }];
               processRenderQueue(responseElement, ps, aiResponseContainer);
@@ -297,6 +304,17 @@ export async function getAIResponse(
 
       chrome.runtime.onMessage.addListener(messageListener);
 
+      const requestBody = {
+        model: modelName,
+        messages: [
+          { role: "system", content: systemPrompt },
+          ...messages
+        ],
+        stream: true,
+        ...(provider === 'openrouter' && { include_reasoning: true })
+      };
+
+      console.log(`🚀 发送请求 - 服务商: ${provider}, 模型: ${modelName}`);
 
       chrome.runtime.sendMessage({
         action: "proxyRequest",
@@ -306,15 +324,7 @@ export async function getAIResponse(
           "Content-Type": "application/json",
           Authorization: `Bearer ${apiKey}`,
         },
-        body: JSON.stringify({
-          model: modelName,
-          messages: [
-            { role: "system", content: systemPrompt },
-            ...messages
-          ],
-          stream: true,
-          temperature: 0.5,
-        })
+        body: JSON.stringify(requestBody)
       });
     });
 

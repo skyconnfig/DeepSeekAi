@@ -90,7 +90,9 @@ export function addIconsToElement(element) {
 
   const iconContainer = document.createElement("div");
   iconContainer.className = "icon-container";
-  iconContainer.style.display = "none";
+  iconContainer.style.display = "flex";
+  iconContainer.style.opacity = "0";
+  iconContainer.style.transition = "opacity 0.2s ease";
 
   const copyWrapper = document.createElement("div");
   copyWrapper.className = "icon-wrapper tooltip";
@@ -190,32 +192,28 @@ export function addIconsToElement(element) {
   element.appendChild(iconContainer);
 
   element.addEventListener("mouseenter", () => {
-    iconContainer.style.display = "flex";
+    iconContainer.style.opacity = "1";
   });
 
   element.addEventListener("mouseleave", () => {
-    iconContainer.style.display = "none";
+    iconContainer.style.opacity = "0";
   });
 
-  // 添加鼠标移出事件处理
+  // 修改鼠标移出事件处理
   element.addEventListener('mouseleave', (event) => {
-    // 检查是否是首次显示的按钮
     if (iconContainer.dataset.initialShow === 'true') {
-      // 移除首次显示标记
       delete iconContainer.dataset.initialShow;
-      // 隐藏按钮
-      iconContainer.style.display = 'none';
+      iconContainer.style.opacity = '0';
 
-      // 添加常规的悬浮显示逻辑
       element.addEventListener('mouseenter', () => {
         if (!iconContainer.dataset.initialShow) {
-          iconContainer.style.display = 'flex';
+          iconContainer.style.opacity = '1';
         }
       });
 
       element.addEventListener('mouseleave', () => {
         if (!iconContainer.dataset.initialShow) {
-          iconContainer.style.display = 'none';
+          iconContainer.style.opacity = '0';
         }
       });
     }
@@ -257,7 +255,7 @@ export function updateLastAnswerIcons() {
 
   if (iconContainer && !iconContainer.querySelector('img[src*="regenerate"]') &&
       userQuestion && userQuestion.classList.contains("user-question")) {
-    iconContainer.style.display = 'flex';
+    iconContainer.style.opacity = '1';
     const regenerateWrapper = document.createElement("div");
     regenerateWrapper.className = "icon-wrapper tooltip";
 

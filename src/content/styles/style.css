@@ -336,7 +336,7 @@
 .theme-adaptive .user-question {
   background-color: var(--user-question-bg);
   color: white;
-  padding: 10px 14px;
+  padding: 10px 12px;
   margin: 12px 12px;
   border-radius: 14px;
   font-size: 15px;
@@ -864,7 +864,7 @@
 
 /* 确保内容容器不会溢出 */
 .theme-adaptive #ai-response-container {
-  height: calc(100% - 60px) !important;
+  height: calc(100% - 65px) !important;
   margin-bottom: 60px;
   background-color: var(--bg-primary);
   padding: 0 10px 40px 10px;

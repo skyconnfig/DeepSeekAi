@@ -398,7 +398,7 @@ const translations = {
     rememberWindowSizeTip: "记住您调整后的会话窗口大小，下次打开时将保持相同尺寸",
     pinWindowLabel: "固定窗口",
     pinWindowTip: "开启后，点击窗口外部不会自动关闭会话窗口",
-    warningMessage: "DeepSeek近期一直在遭受大规模网络攻击，部分网站和API服务可能暂时无法正常使用，请等待官方恢复",
+    warningMessage: "部分服务商API如若不能正常使用请切换服务商",
     // 火山引擎相关
     getModelId: "获取模型ID（必填）",
     v3ModelLabel: "V3 Model ID:",
@@ -434,7 +434,7 @@ const translations = {
     rememberWindowSizeTip: "Remember your preferred chat window size for future sessions",
     pinWindowLabel: "Pin Window",
     pinWindowTip: "When enabled, clicking outside the window won't close it",
-    warningMessage: "DeepSeek is currently experiencing large-scale network attacks. Some website and API services may be temporarily unavailable.",
+    warningMessage: "If some service provider APIs cannot be used normally, please switch providers.",
     // Volcengine related
     getModelId: "Get Model ID(required)",
     v3ModelLabel: "V3 Model ID:",

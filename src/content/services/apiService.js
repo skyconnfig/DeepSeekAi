@@ -142,6 +142,7 @@ export async function getAIResponse(
     const apiKey = provider === 'volcengine' ? settings.volcengineApiKey :
                   provider === 'siliconflow' ? settings.siliconflowApiKey :
                   provider === 'openrouter' ? settings.openrouterApiKey :
+                  provider === 'tencentcloud' ? settings.tencentcloudApiKey :
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
@@ -217,6 +218,8 @@ export async function getAIResponse(
       ? 'https://api.siliconflow.cn/v1/chat/completions'
       : provider === 'openrouter'
       ? 'https://openrouter.ai/api/v1/chat/completions'
+      : provider === 'tencentcloud'
+      ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
     const response = await new Promise((resolve, reject) => {

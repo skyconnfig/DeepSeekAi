@@ -10,19 +10,23 @@ export class ApiKeyManager {
       const providerConfig = {
         'deepseek': {
           url: 'https://api.deepseek.com/v1/chat/completions',
-          model: 'deepseek-chat'
+          model: settings?.model || 'deepseek-chat'
         },
         'volcengine': {
           url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-          model: settings?.v3model || settings?.r1model
+          model: settings?.model === 'r1' ? settings?.r1model : settings?.v3model
         },
         'siliconflow': {
           url: 'https://api.siliconflow.cn/v1/chat/completions',
-          model: 'deepseek-ai/DeepSeek-V3'
+          model: settings?.model || 'deepseek-ai/DeepSeek-V3'
         },
         'openrouter': {
           url: 'https://openrouter.ai/api/v1/chat/completions',
-          model: 'deepseek/deepseek-chat:free'
+          model: settings?.model || 'deepseek/deepseek-chat:free'
+        },
+        'tencentcloud': {
+          url: 'https://api.lkeap.cloud.tencent.com/v1/chat/completions',
+          model: settings?.model || 'deepseek-v3'
         }
       };
 

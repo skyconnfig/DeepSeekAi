@@ -4,13 +4,14 @@ const requestControllers = new Map(); // 存储请求控制器
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
     chrome.storage.sync.get(
-      ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "language", "model", "provider", "v3model", "r1model"],
+      ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "language", "model", "provider", "v3model", "r1model"],
       (data) => {
         sendResponse({
           deepseekApiKey: data.deepseekApiKey || '',
           volcengineApiKey: data.volcengineApiKey || '',
           siliconflowApiKey: data.siliconflowApiKey || '',
           openrouterApiKey: data.openrouterApiKey || '',
+          tencentcloudApiKey: data.tencentcloudApiKey || '',
           language: data.language || 'en',
           model: data.model || 'deepseek-chat',
           provider: data.provider || 'deepseek',
@@ -29,6 +30,16 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     // 存储控制器
     if (sender?.tab?.id) {
       requestControllers.set(sender.tab.id, controller);
+    }
+
+    // 如果请求体中没有model参数，从storage中获取
+    if (request.body && !request.body.includes('"model"')) {
+      chrome.storage.sync.get(['model'], (data) => {
+        const model = data.model || 'deepseek-chat';
+        const bodyObj = JSON.parse(request.body);
+        bodyObj.model = model;
+        request.body = JSON.stringify(bodyObj);
+      });
     }
 
     fetch(request.url, {

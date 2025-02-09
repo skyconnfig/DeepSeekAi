@@ -164,7 +164,8 @@ class PopupManager {
       'deepseek': 'https://platform.deepseek.com/api_keys',
       'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
       'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH',
-      'openrouter': 'https://openrouter.ai/settings/keys'
+      'openrouter': 'https://openrouter.ai/settings/keys',
+      'tencentcloud': 'https://console.cloud.tencent.com/lkeap/api'
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -197,6 +198,10 @@ class PopupManager {
         { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek R1 Free' },
         { value: 'deepseek/deepseek-chat', label: 'DeepSeek V3' },
         { value: 'deepseek/deepseek-r1', label: 'DeepSeek R1' },
+      ],
+      'tencentcloud': [
+        { value: 'deepseek-v3', label: 'DeepSeek V3' },
+        { value: 'deepseek-r1', label: 'DeepSeek R1' }
       ]
     };
 
@@ -208,13 +213,17 @@ class PopupManager {
       modelSelect.appendChild(optionElement);
     });
 
-    // 如果当前值在新的选项中存在，则保持选中
-    if (currentValue && options.some(opt => opt.value === currentValue)) {
-      modelSelect.value = currentValue;
-    } else {
-      // 如果当前值不存在，则保存第一个选项
-      this.storageManager.saveModel(modelSelect.value);
-    }
+    // 获取保存的模型设置
+    this.storageManager.getSettings().then(settings => {
+      // 如果当前provider下有保存的model值，则使用它
+      if (settings.model && options.some(opt => opt.value === settings.model)) {
+        modelSelect.value = settings.model;
+      } else {
+        // 如果没有保存的值或值无效，使用第一个选项并保存
+        modelSelect.value = options[0]?.value || '';
+        this.storageManager.saveModel(modelSelect.value);
+      }
+    });
   }
 
   async handleApiKeyValidation() {
@@ -396,7 +405,8 @@ const translations = {
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "火山引擎模型配置",
     volcengineProvider: "火山引擎",
-    siliconflowProvider: "硅基流动"
+    siliconflowProvider: "硅基流动",
+    tencentcloudProvider: "腾讯云"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -431,7 +441,8 @@ const translations = {
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "Volcengine Models Configuration",
     volcengineProvider: "VolcanoEngine",
-    siliconflowProvider: "SiliconFlow"
+    siliconflowProvider: "SiliconFlow",
+    tencentcloudProvider: "Tencent Cloud"
   },
 };
 
@@ -473,7 +484,8 @@ const updateContent = () => {
     'r1ModelLabel': langData.r1ModelLabel,
     'volcengineModelsTitle': langData.volcengineModelsTitle,
     'volcengineProvider': langData.volcengineProvider,
-    'siliconflowProvider': langData.siliconflowProvider
+    'siliconflowProvider': langData.siliconflowProvider,
+    'tencentcloudProvider': langData.tencentcloudProvider
   };
 
   // 批量更新DOM

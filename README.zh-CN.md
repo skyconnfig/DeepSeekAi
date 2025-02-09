@@ -17,7 +17,12 @@
 
 DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https://deepseek.com) API，为用户提供智能的网页交互体验。通过简单的文本选择，即可获得 AI 驱动的实时响应，让您的网页浏览体验更加智能和高效。
 
-> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们同时支持 [DeepSeek](https://deepseek.com) API、[字节跳动火山引擎](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API 和[硅基流动](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API。
+> **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们支持以下 API 服务商：
+> - [DeepSeek](https://deepseek.com) 官方 API
+> - [字节跳动火山引擎](https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D) DeepSeek API
+> - [硅基流动](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API
+> - [OpenRouter](https://openrouter.ai/models) DeepSeek API
+> - [腾讯云](https://cloud.tencent.com/document/product/1772/115969) DeepSeek API
 
 ## ✨ 核心特性
 
@@ -27,7 +32,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 - **快捷操作**: 支持文本选择、右键菜单和快捷键三种方式唤起对话窗口
 - **流式响应**: AI 回复实时流式显示，提供即时反馈 
 - **模型选择**: 支持选择 DeepSeek V3 和 DeepSeek R1 模型
-- **API 提供商**: 同时支持 DeepSeek 官方 API、字节跳动火山引擎 DeepSeek API 和硅基流动 DeepSeek API
+- **API 提供商**: 支持 DeepSeek 官方 API、字节跳动火山引擎 DeepSeek API、硅基流动 DeepSeek API、OpenRouter DeepSeek API 和腾讯云 DeepSeek API
 
 ### 💎 用户体验
 - **可拖拽界面**: 对话窗口支持自由拖拽和大小调整

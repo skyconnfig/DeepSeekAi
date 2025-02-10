@@ -23,6 +23,7 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 > - [SiliconFlow](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API
 > - [OpenRouter](https://openrouter.ai/models) DeepSeek API
 > - [Tencent Cloud](https://cloud.tencent.com/document/product/1772/115969) DeepSeek API
+> - [IFlytek Star](https://training.xfyun.cn/modelService) DeepSeek API
 
 ## ✨ Core Features
 
@@ -32,7 +33,7 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 - **Quick Access**: Three ways to invoke the chat window - text selection, right-click menu, and keyboard shortcuts
 - **Streaming Response**: Real-time streaming display of AI responses
 - **Model Selection**: Choose between DeepSeek V3 and DeepSeek R1 models
-- **API Provider**: Support DeepSeek official API, ByteDance Volcengine DeepSeek API, SiliconFlow DeepSeek API, OpenRouter DeepSeek API, and Tencent Cloud DeepSeek API
+- **API Provider**: Support DeepSeek official API, ByteDance Volcengine DeepSeek API, SiliconFlow DeepSeek API, OpenRouter DeepSeek API, Tencent Cloud DeepSeek API, and IFlytek Star DeepSeek API
 
 ### 💎 User Experience
 - **Draggable Interface**: Freely drag and resize the chat window

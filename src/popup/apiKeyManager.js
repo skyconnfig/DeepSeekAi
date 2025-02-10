@@ -27,6 +27,10 @@ export class ApiKeyManager {
         'tencentcloud': {
           url: 'https://api.lkeap.cloud.tencent.com/v1/chat/completions',
           model: settings?.model || 'deepseek-v3'
+        },
+        'iflytekstar': {
+          url: 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions',
+          model: settings?.model || 'xdeepseekv3'
         }
       };
 

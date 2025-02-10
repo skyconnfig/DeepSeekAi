@@ -143,6 +143,7 @@ export async function getAIResponse(
                   provider === 'siliconflow' ? settings.siliconflowApiKey :
                   provider === 'openrouter' ? settings.openrouterApiKey :
                   provider === 'tencentcloud' ? settings.tencentcloudApiKey :
+                  provider === 'iflytekstar' ? settings.iflytekstarApiKey :
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
@@ -172,6 +173,18 @@ export async function getAIResponse(
       }
       return;
     }
+
+    const apiUrl = provider === 'volcengine'
+      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
+      : provider === 'siliconflow'
+      ? 'https://api.siliconflow.cn/v1/chat/completions'
+      : provider === 'openrouter'
+      ? 'https://openrouter.ai/api/v1/chat/completions'
+      : provider === 'tencentcloud'
+      ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
+      : provider === 'iflytekstar'
+      ? 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions'
+      : 'https://api.deepseek.com/v1/chat/completions';
 
     const modelName = provider === 'volcengine'
       ? (model === 'r1' ? r1model : v3model)
@@ -211,16 +224,6 @@ export async function getAIResponse(
       : language === "auto"
         ? "Detect and respond in the same language as the user's input. If the user's input is in Chinese, respond in Chinese. If the user's input is in English, respond in English, etc."
         : `You MUST respond ONLY in ${language}.Including your reasoningContent language. This is a strict requirement. Do not use any other language except ${language}.${quickActionPrompt || ''}`;
-
-    const apiUrl = provider === 'volcengine'
-      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
-      : provider === 'siliconflow'
-      ? 'https://api.siliconflow.cn/v1/chat/completions'
-      : provider === 'openrouter'
-      ? 'https://openrouter.ai/api/v1/chat/completions'
-      : provider === 'tencentcloud'
-      ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
-      : 'https://api.deepseek.com/v1/chat/completions';
 
     const response = await new Promise((resolve, reject) => {
       let aiResponse = "";

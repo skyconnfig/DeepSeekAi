@@ -165,7 +165,8 @@ class PopupManager {
       'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
       'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH',
       'openrouter': 'https://openrouter.ai/settings/keys',
-      'tencentcloud': 'https://console.cloud.tencent.com/lkeap/api'
+      'tencentcloud': 'https://console.cloud.tencent.com/lkeap/api',
+      'iflytekstar': 'https://training.xfyun.cn/modelService'
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -202,6 +203,10 @@ class PopupManager {
       'tencentcloud': [
         { value: 'deepseek-v3', label: 'DeepSeek V3' },
         { value: 'deepseek-r1', label: 'DeepSeek R1' }
+      ],
+      'iflytekstar': [
+        { value: 'xdeepseekv3', label: 'DeepSeek V3' },
+        { value: 'xdeepseekr1', label: 'DeepSeek R1' }
       ]
     };
 
@@ -383,6 +388,7 @@ const translations = {
     shortcutSettingsText: "快捷键设置",
     shortcutDescription: "请前往设置快捷键",
     instructionsText: "使用说明",
+    feedbackText: "反馈",
     statusText: "API 服务状态",
     balanceText: "余额",
     noBalance: "无可用余额",
@@ -406,7 +412,8 @@ const translations = {
     volcengineModelsTitle: "火山引擎模型配置",
     volcengineProvider: "火山引擎",
     siliconflowProvider: "硅基流动",
-    tencentcloudProvider: "腾讯云"
+    tencentcloudProvider: "腾讯云",
+    iflytekstarProvider: "讯飞星辰"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -419,6 +426,7 @@ const translations = {
     shortcutSettingsText: "Shortcut Settings",
     shortcutDescription: "Please configure shortcut keys",
     instructionsText: "Instructions",
+    feedbackText: "Feedback",
     statusText: "API Service Status",
     balanceText: "Balance",
     noBalance: "No available balance",
@@ -440,9 +448,10 @@ const translations = {
     v3ModelLabel: "V3 Model ID:",
     r1ModelLabel: "R1 Model ID:",
     volcengineModelsTitle: "Volcengine Models Configuration",
-    volcengineProvider: "VolcanoEngine",
+    volcengineProvider: "Volcano Engine",
     siliconflowProvider: "SiliconFlow",
-    tencentcloudProvider: "Tencent Cloud"
+    tencentcloudProvider: "Tencent Cloud",
+    iflytekstarProvider: "IFlytek Star"
   },
 };
 
@@ -473,6 +482,7 @@ const updateContent = () => {
     'shortcutSettingsText': langData.shortcutSettingsText,
     'shortcutDescription': langData.shortcutDescription,
     'instructionsText': langData.instructionsText,
+    'feedbackText': langData.feedbackText,
     'statusText': langData.statusText,
     'balanceText': langData.balanceText,
     'selectionEnabledLabel': langData.selectionEnabledLabel,
@@ -485,7 +495,8 @@ const updateContent = () => {
     'volcengineModelsTitle': langData.volcengineModelsTitle,
     'volcengineProvider': langData.volcengineProvider,
     'siliconflowProvider': langData.siliconflowProvider,
-    'tencentcloudProvider': langData.tencentcloudProvider
+    'tencentcloudProvider': langData.tencentcloudProvider,
+    'iflytekstarProvider': langData.iflytekstarProvider
   };
 
   // 批量更新DOM

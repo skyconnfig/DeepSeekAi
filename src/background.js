@@ -4,7 +4,7 @@ const requestControllers = new Map(); // 存储请求控制器
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
     chrome.storage.sync.get(
-      ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "language", "model", "provider", "v3model", "r1model"],
+      ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "iflytekstarApiKey", "language", "model", "provider", "v3model", "r1model"],
       (data) => {
         sendResponse({
           deepseekApiKey: data.deepseekApiKey || '',
@@ -12,6 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           siliconflowApiKey: data.siliconflowApiKey || '',
           openrouterApiKey: data.openrouterApiKey || '',
           tencentcloudApiKey: data.tencentcloudApiKey || '',
+          iflytekstarApiKey: data.iflytekstarApiKey || '',
           language: data.language || 'en',
           model: data.model || 'deepseek-chat',
           provider: data.provider || 'deepseek',

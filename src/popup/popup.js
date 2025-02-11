@@ -166,7 +166,9 @@ class PopupManager {
       'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH',
       'openrouter': 'https://openrouter.ai/settings/keys',
       'tencentcloud': 'https://console.cloud.tencent.com/lkeap/api',
-      'iflytekstar': 'https://training.xfyun.cn/modelService'
+      'iflytekstar': 'https://training.xfyun.cn/modelService',
+      'baiducloud': 'https://console.bce.baidu.com/iam/#/iam/apikey/create',
+      'aliyun': 'https://bailian.console.aliyun.com/?apiKey=1#/api-key',
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -181,32 +183,40 @@ class PopupManager {
 
     const modelOptions = {
       'deepseek': [
-        { value: 'deepseek-chat', label: 'DeepSeek V3' },
-        { value: 'deepseek-reasoner', label: 'DeepSeek R1' }
+        { value: 'deepseek-chat', label: 'DeepSeek-V3' },
+        { value: 'deepseek-reasoner', label: 'DeepSeek-R1' }
       ],
       'siliconflow': [
-        { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek V3' },
-        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek R1' },
-        { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'Pro DeepSeek V3' },
-        { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'Pro DeepSeek R1' },
+        { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3' },
+        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1' },
+        { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'Pro DeepSeek-V3' },
+        { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'Pro DeepSeek-R1' },
       ],
       'volcengine': [
-        { value: 'v3', label: 'DeepSeek V3' },
-        { value: 'r1', label: 'DeepSeek R1' }
+        { value: 'v3', label: 'DeepSeek-V3' },
+        { value: 'r1', label: 'DeepSeek-R1' }
       ],
       'openrouter': [
-        { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek V3 Free' },
-        { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek R1 Free' },
-        { value: 'deepseek/deepseek-chat', label: 'DeepSeek V3' },
-        { value: 'deepseek/deepseek-r1', label: 'DeepSeek R1' },
+        { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek-V3 Free' },
+        { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek-R1 Free' },
+        { value: 'deepseek/deepseek-chat', label: 'DeepSeek-V3' },
+        { value: 'deepseek/deepseek-r1', label: 'DeepSeek-R1' },
       ],
       'tencentcloud': [
-        { value: 'deepseek-v3', label: 'DeepSeek V3' },
-        { value: 'deepseek-r1', label: 'DeepSeek R1' }
+        { value: 'deepseek-v3', label: 'DeepSeek-V3' },
+        { value: 'deepseek-r1', label: 'DeepSeek-R1' }
       ],
       'iflytekstar': [
-        { value: 'xdeepseekv3', label: 'DeepSeek V3' },
-        { value: 'xdeepseekr1', label: 'DeepSeek R1' }
+        { value: 'xdeepseekv3', label: 'DeepSeek-V3' },
+        { value: 'xdeepseekr1', label: 'DeepSeek-R1' }
+      ],
+      'baiducloud': [
+        { value: 'deepseek-v3', label: 'DeepSeek-V3' },
+        { value: 'deepseek-r1', label: 'DeepSeek-R1' }
+      ],
+      'aliyun': [
+        { value: 'deepseek-v3', label: 'DeepSeek-V3' },
+        { value: 'deepseek-r1', label: 'DeepSeek-R1' }
       ]
     };
 
@@ -255,8 +265,6 @@ class PopupManager {
         );
         return;
       }
-
-
     }
 
     // 显示验证中的消息
@@ -413,7 +421,9 @@ const translations = {
     volcengineProvider: "火山引擎",
     siliconflowProvider: "硅基流动",
     tencentcloudProvider: "腾讯云",
-    iflytekstarProvider: "讯飞星辰"
+    iflytekstarProvider: "讯飞星辰",
+    baiducloudProvider: "百度智能云",
+    aliyunProvider: "阿里云"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -451,7 +461,9 @@ const translations = {
     volcengineProvider: "Volcano Engine",
     siliconflowProvider: "SiliconFlow",
     tencentcloudProvider: "Tencent Cloud",
-    iflytekstarProvider: "IFlytek Star"
+    iflytekstarProvider: "IFlytek Star",
+    baiducloudProvider: "Baidu Cloud",
+    aliyunProvider: "Aliyun"
   },
 };
 
@@ -496,7 +508,9 @@ const updateContent = () => {
     'volcengineProvider': langData.volcengineProvider,
     'siliconflowProvider': langData.siliconflowProvider,
     'tencentcloudProvider': langData.tencentcloudProvider,
-    'iflytekstarProvider': langData.iflytekstarProvider
+    'iflytekstarProvider': langData.iflytekstarProvider,
+    'baiducloudProvider': langData.baiducloudProvider,
+    'aliyunProvider': langData.aliyunProvider
   };
 
   // 批量更新DOM

@@ -31,6 +31,14 @@ export class ApiKeyManager {
         'iflytekstar': {
           url: 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions',
           model: settings?.model || 'xdeepseekv3'
+        },
+        'baiducloud': {
+          url: 'https://qianfan.baidubce.com/v2/chat/completions',
+          model: settings?.model || 'deepseek-v3'
+        },
+        'aliyun': {
+          url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+          model: settings?.model || 'deepseek-v3'
         }
       };
 

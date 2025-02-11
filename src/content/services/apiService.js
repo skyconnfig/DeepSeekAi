@@ -144,6 +144,8 @@ export async function getAIResponse(
                   provider === 'openrouter' ? settings.openrouterApiKey :
                   provider === 'tencentcloud' ? settings.tencentcloudApiKey :
                   provider === 'iflytekstar' ? settings.iflytekstarApiKey :
+                  provider === 'baiducloud' ? settings.baiducloudApiKey :
+                  provider === 'aliyun' ? settings.aliyunApiKey :
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
@@ -184,6 +186,10 @@ export async function getAIResponse(
       ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
       : provider === 'iflytekstar'
       ? 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions'
+      : provider === 'baiducloud'
+      ? 'https://qianfan.baidubce.com/v2/chat/completions'
+      : provider === 'aliyun'
+      ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
     const modelName = provider === 'volcengine'

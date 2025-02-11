@@ -24,6 +24,8 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 > - [OpenRouter](https://openrouter.ai/models) DeepSeek API
 > - [腾讯云](https://cloud.tencent.com/document/product/1772/115969) DeepSeek API
 > - [讯飞星辰](https://training.xfyun.cn/modelService) DeepSeek API
+> - [百度智能云](https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/list)
+> - [阿里云](https://bailian.console.aliyun.com/#/model-market) DeepSeek API
 
 ## ✨ 核心特性
 
@@ -33,7 +35,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 - **快捷操作**: 支持文本选择、右键菜单和快捷键三种方式唤起对话窗口
 - **流式响应**: AI 回复实时流式显示，提供即时反馈 
 - **模型选择**: 支持选择 DeepSeek V3 和 DeepSeek R1 模型
-- **API 提供商**: 支持 DeepSeek 官方 API、字节跳动火山引擎 DeepSeek API、硅基流动 DeepSeek API、OpenRouter DeepSeek API、腾讯云 DeepSeek API 和讯飞星辰 DeepSeek API
+- **API 提供商**: 支持 DeepSeek 官方 API、字节跳动火山引擎 DeepSeek API、硅基流动 DeepSeek API、OpenRouter DeepSeek API、腾讯云 DeepSeek API、百度智能云 DeepSeek API、阿里云 DeepSeek API 和讯飞星辰 DeepSeek API
 
 ### 💎 用户体验
 - **可拖拽界面**: 对话窗口支持自由拖拽和大小调整
@@ -57,6 +59,8 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 #### 1. 应用商店安装（推荐）
 - [Chrome Web Store](https://chromewebstore.google.com/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)
 - [Microsoft Edge Add-ons](https://chromewebstore.google.com/detail/deepseek-ai/bjjobdlpgglckcmhgmmecijpfobmcpap)
+- [其他安装地址](https://www.crxsoso.com/webstore/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)（支持 Chromium 内核的浏览器如 Edge/Chrome 等）
+- 安装方法请参考 [这里](https://www.youxiaohou.com/zh-cn/crx.html?spm=1739204947442#edge%E6%B5%8F%E8%A7%88%E5%99%A8)
 
 #### 2. 手动安装
 ```bash

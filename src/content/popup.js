@@ -25,33 +25,26 @@ const SCROLL_CONSTANTS = {
 const adjustPopupPosition = (rect) => {
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const scrollX = window.scrollX || window.pageXOffset;
-  const scrollY = window.scrollY || window.pageYOffset;
   const popupWidth = parseInt(STYLE_CONSTANTS.DEFAULT_POPUP_WIDTH);
   const popupHeight = parseInt(STYLE_CONSTANTS.DEFAULT_POPUP_HEIGHT);
 
-  let adjustedX = rect.left + scrollX + rect.width / 2 - popupWidth / 2;
-  let adjustedY = rect.top + scrollY + rect.height;
+  // 计算相对于视口的位置
+  let adjustedX = rect.left + rect.width / 2 - popupWidth / 2;
+  let adjustedY = rect.top + rect.height;
 
-  if (adjustedY + popupHeight > viewportHeight + scrollY) {
-    adjustedY = rect.top + scrollY - popupHeight;
+  if (adjustedY + popupHeight > viewportHeight) {
+    adjustedY = rect.top - popupHeight;
   }
 
-  adjustedX = Math.max(
-    scrollX,
-    Math.min(adjustedX, viewportWidth + scrollX - popupWidth)
-  );
-  adjustedY = Math.max(
-    scrollY,
-    Math.min(adjustedY, viewportHeight + scrollY - popupHeight)
-  );
+  adjustedX = Math.max(0, Math.min(adjustedX, viewportWidth - popupWidth));
+  adjustedY = Math.max(0, Math.min(adjustedY, viewportHeight - popupHeight));
 
   return { left: `${adjustedX}px`, top: `${adjustedY}px` };
 };
 
 // 添加 getPopupInitialStyle 函数
 const getPopupInitialStyle = (rect) => ({
-  position: 'absolute',
+  position: 'fixed',
   width: STYLE_CONSTANTS.DEFAULT_POPUP_WIDTH,
   height: STYLE_CONSTANTS.DEFAULT_POPUP_HEIGHT,
   paddingTop: STYLE_CONSTANTS.DEFAULT_PADDING_TOP,

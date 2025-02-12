@@ -39,6 +39,10 @@ export class ApiKeyManager {
         'aliyun': {
           url: 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
           model: settings?.model || 'deepseek-v3'
+        },
+        'luchentech': {
+          url: 'https://cloud.luchentech.com/api/maas/chat/completions',
+          model: settings?.model || 'deepseek-ai/DeepSeek-R1'
         }
       };
 

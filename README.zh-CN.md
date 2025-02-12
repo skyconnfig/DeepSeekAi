@@ -26,6 +26,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 > - [讯飞星辰](https://training.xfyun.cn/modelService) DeepSeek API
 > - [百度智能云](https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/list)
 > - [阿里云](https://bailian.console.aliyun.com/#/model-market) DeepSeek API
+> - [潞晨云] (https://cloud.luchentech.com/maas/modelMarket)
 
 ## ✨ 核心特性
 
@@ -59,8 +60,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 #### 1. 应用商店安装（推荐）
 - [Chrome Web Store](https://chromewebstore.google.com/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)
 - [Microsoft Edge Add-ons](https://chromewebstore.google.com/detail/deepseek-ai/bjjobdlpgglckcmhgmmecijpfobmcpap)
-- [其他安装地址](https://www.crxsoso.com/webstore/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)（支持 Chromium 内核的浏览器如 Edge/Chrome 等）
-- 安装方法请参考 [这里](https://www.youxiaohou.com/zh-cn/crx.html?spm=1739204947442#edge%E6%B5%8F%E8%A7%88%E5%99%A8)
+- [其他安装地址](https://www.crxsoso.com/webstore/detail/bjjobdlpgglckcmhgmmecijpfobmcpap)（支持 Chromium 内核的浏览器如 Edge/Chrome 等）, 安装方法请参考 [这里](https://www.youxiaohou.com/zh-cn/crx.html?spm=1739204947442#edge%E6%B5%8F%E8%A7%88%E5%99%A8)
 
 #### 2. 手动安装
 ```bash

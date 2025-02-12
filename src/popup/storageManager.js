@@ -2,7 +2,7 @@ export class StorageManager {
   async getSettings() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(
-        ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "language", "model", "provider", "v3model", "r1model", "selectionEnabled", "rememberWindowSize", "pinWindow"],
+        ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "luchentechApiKey", "language", "model", "provider", "v3model", "r1model", "selectionEnabled", "rememberWindowSize", "pinWindow"],
         (data) => {
           resolve({
             deepseekApiKey: data.deepseekApiKey || '',
@@ -13,6 +13,7 @@ export class StorageManager {
             iflytekstarApiKey: data.iflytekstarApiKey || '',
             baiducloudApiKey: data.baiducloudApiKey || '',
             aliyunApiKey: data.aliyunApiKey || '',
+            luchentechApiKey: data.luchentechApiKey || '',
             language: data.language || 'en',
             model: data.model || 'deepseek-chat',
             provider: data.provider || 'deepseek',

@@ -26,6 +26,7 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 > - [IFlytek Star](https://training.xfyun.cn/modelService) DeepSeek API
 > - [Baidu Cloud](https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/list) DeepSeek API
 > - [Aliyun](https://bailian.console.aliyun.com/#/model-market) DeepSeek API
+> - [LuChenTech](https://cloud.luchentech.com/maas/modelMarket) DeepSeek API
 
 ## ✨ Core Features
 

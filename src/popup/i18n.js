@@ -4,7 +4,7 @@ export class I18nManager {
       zh: {
         validating: '正在验证...',
         saveSuccess: '保存成功',
-        apiKeyInvalid: 'API Key 无效',
+        apiKeyInvalid: 'API密钥无效或检查当前所选模型是否可用',
         noBalance: '暂无余额',
         noApiKey: '请先设置 API Key',
         fetchError: '获取失败',
@@ -14,7 +14,7 @@ export class I18nManager {
       en: {
         validating: 'Validating...',
         saveSuccess: 'Saved successfully',
-        apiKeyInvalid: 'Invalid API Key',
+        apiKeyInvalid: 'The API key is invalid or check if the currently selected model is available.',
         noBalance: 'No balance',
         noApiKey: 'Please set API Key first',
         fetchError: 'Failed to fetch',

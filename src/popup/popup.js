@@ -169,6 +169,7 @@ class PopupManager {
       'iflytekstar': 'https://training.xfyun.cn/modelService',
       'baiducloud': 'https://console.bce.baidu.com/iam/#/iam/apikey/create',
       'aliyun': 'https://bailian.console.aliyun.com/?apiKey=1#/api-key',
+      'luchentech': 'https://cloud.luchentech.com/maas/apiKey',
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -189,18 +190,18 @@ class PopupManager {
       'siliconflow': [
         { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3' },
         { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1' },
-        { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'Pro DeepSeek-V3' },
-        { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'Pro DeepSeek-R1' },
+        { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 Pro' },
+        { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 Pro' },
       ],
       'volcengine': [
         { value: 'v3', label: 'DeepSeek-V3' },
         { value: 'r1', label: 'DeepSeek-R1' }
       ],
       'openrouter': [
-        { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek-V3 Free' },
-        { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek-R1 Free' },
         { value: 'deepseek/deepseek-chat', label: 'DeepSeek-V3' },
         { value: 'deepseek/deepseek-r1', label: 'DeepSeek-R1' },
+        { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek-V3 Free' },
+        { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek-R1 Free' },
       ],
       'tencentcloud': [
         { value: 'deepseek-v3', label: 'DeepSeek-V3' },
@@ -217,6 +218,11 @@ class PopupManager {
       'aliyun': [
         { value: 'deepseek-v3', label: 'DeepSeek-V3' },
         { value: 'deepseek-r1', label: 'DeepSeek-R1' }
+      ],
+      'luchentech': [
+        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1' },
+        { value: 'VIP/deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 VIP' },
+        { value: 'VIP/deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 VIP' },
       ]
     };
 
@@ -403,7 +409,7 @@ const translations = {
     noApiKey: "请先设置API Key",
     fetchError: "查询失败",
     apiKeyEmpty: "请输入 API Key",
-    apiKeyInvalid: "API Key 无效",
+    apiKeyInvalid: "API密钥无效或检查当前所选模型是否可用",
     saveSuccess: "设置已保存",
     selectionEnabledLabel: "快捷按钮",
     selectionEnabledTip: "选中文本后显示快捷按钮，点击可快速打开会话窗口",
@@ -423,7 +429,8 @@ const translations = {
     tencentcloudProvider: "腾讯云",
     iflytekstarProvider: "讯飞星辰",
     baiducloudProvider: "百度智能云",
-    aliyunProvider: "阿里云"
+    aliyunProvider: "阿里云",
+    luchentechProvider: "潞晨云"
   },
   en: {
     headerTitle: "DeepSeek AI",
@@ -443,7 +450,7 @@ const translations = {
     noApiKey: "Please set API Key first",
     fetchError: "Failed to fetch",
     apiKeyEmpty: "Please enter API Key",
-    apiKeyInvalid: "Invalid API Key",
+    apiKeyInvalid: "The API key is invalid or check if the currently selected model is available.",
     saveSuccess: "Settings saved",
     selectionEnabledLabel: "Quick Button",
     selectionEnabledTip: "Show a quick button when text is selected to open the chat window",
@@ -463,7 +470,8 @@ const translations = {
     tencentcloudProvider: "Tencent Cloud",
     iflytekstarProvider: "IFlytek Star",
     baiducloudProvider: "Baidu Cloud",
-    aliyunProvider: "Aliyun"
+    aliyunProvider: "Aliyun",
+    luchentechProvider: "Luchentech"
   },
 };
 
@@ -510,7 +518,8 @@ const updateContent = () => {
     'tencentcloudProvider': langData.tencentcloudProvider,
     'iflytekstarProvider': langData.iflytekstarProvider,
     'baiducloudProvider': langData.baiducloudProvider,
-    'aliyunProvider': langData.aliyunProvider
+    'aliyunProvider': langData.aliyunProvider,
+    'luchentechProvider': langData.luchentechProvider
   };
 
   // 批量更新DOM

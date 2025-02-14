@@ -26,7 +26,7 @@
       .container {
         display: flex;
         flex-direction: column;
-        gap: 12px;
+        gap: 5px;
         height: auto;
       }
 
@@ -56,6 +56,7 @@
         flex-direction: column;
         gap: 8px;
         flex: 1;
+        margin-top: 5px;
       }
 
       .key-header {
@@ -369,16 +370,15 @@
       .help-link {
         text-align: center;
         padding: 4px 0;
-        /* display: flex;
-        justify-content: center;
-        gap: 16px; */
+        position: relative;
+        bottom: -10px;
       }
 
       .help-link a {
         display: inline-flex;
         align-items: center;
         gap: 6px;
-        padding: 4px 16px;
+        padding: 8px 16px;
         border-radius: 8px;
         font-size: 14px;
         color: var(--text-secondary);
@@ -403,6 +403,8 @@
       }
 
       .language-toggle {
+        display: flex;
+        align-items: center;
         position: absolute;
         top: 12px;
         right: 20px;
@@ -426,8 +428,8 @@
       }
 
       .language-toggle svg {
-        width: 24px;
-        height: 24px;
+        width: 22px;
+        height: 22px;
         fill: currentColor;
         color: rgba(60, 60, 67, 0.6);
       }
@@ -806,6 +808,13 @@
 
       .collapse-button svg {
         transition: transform 0.2s ease;
+        color: rgba(60, 60, 67,0.6);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .collapse-button svg {
+          color: rgba(235, 235, 245, 0.6);
+        }
       }
 
       @media (prefers-color-scheme: dark) {
@@ -891,13 +900,13 @@
           <select id="provider">
             <option value="deepseek">DeepSeek</option>
             <option value="openrouter" id="openrouterProvider">OpenRouter</option>
+            <option value="aihubmix" id="aihubmixProvider">AiHubMix</option>
             <option value="siliconflow" id="siliconflowProvider">SiliconFlow</option>
             <option value="volcengine" id="volcengineProvider">VolcanoEngine</option>
             <option value="tencentcloud" id="tencentcloudProvider">Tencent Cloud</option>
             <option value="iflytekstar" id="iflytekstarProvider">IFlytek Star</option>
             <option value="baiducloud" id="baiducloudProvider">Baidu Cloud</option>
             <option value="aliyun" id="aliyunProvider">Aliyun</option>
-            <option value="luchentech" id="luchentechProvider">Aliyun</option>
           </select>
         </div>
 

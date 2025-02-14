@@ -169,7 +169,7 @@ class PopupManager {
       'iflytekstar': 'https://training.xfyun.cn/modelService',
       'baiducloud': 'https://console.bce.baidu.com/iam/#/iam/apikey/create',
       'aliyun': 'https://bailian.console.aliyun.com/?apiKey=1#/api-key',
-      'luchentech': 'https://cloud.luchentech.com/maas/apiKey',
+      'aihubmix': 'https://aihubmix.com/token'
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -219,10 +219,12 @@ class PopupManager {
         { value: 'deepseek-v3', label: 'DeepSeek-V3' },
         { value: 'deepseek-r1', label: 'DeepSeek-R1' }
       ],
-      'luchentech': [
-        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1' },
-        { value: 'VIP/deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 VIP' },
-        { value: 'VIP/deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 VIP' },
+      'aihubmix': [
+        { value: 'deepseek-reasoner', label: 'DeepSeek-R1 DeepSeek' },
+        { value: 'deepseek-chat', label: 'DeepSeek-V3 DeepSeek' },
+        { value: 'aihubmix-DeepSeek-R1', label: 'DeepSeek-R1 Azure' },
+        { value: 'DeepSeek-R1', label: 'DeepSeek-R1 Aliyun&ByteDance' },
+        { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 Mix' },
       ]
     };
 
@@ -430,8 +432,8 @@ const translations = {
     iflytekstarProvider: "讯飞星辰",
     baiducloudProvider: "百度智能云",
     aliyunProvider: "阿里云",
-    luchentechProvider: "潞晨云"
-  },
+    aihubmixProvider: "AIHubMix",
+    },
   en: {
     headerTitle: "DeepSeek AI",
     apiKeyPlaceholder: "Enter API Key here",
@@ -470,8 +472,8 @@ const translations = {
     tencentcloudProvider: "Tencent Cloud",
     iflytekstarProvider: "IFlytek Star",
     baiducloudProvider: "Baidu Cloud",
+    aihubmixProvider: "AIHubMix",
     aliyunProvider: "Aliyun",
-    luchentechProvider: "Luchentech"
   },
 };
 
@@ -519,7 +521,7 @@ const updateContent = () => {
     'iflytekstarProvider': langData.iflytekstarProvider,
     'baiducloudProvider': langData.baiducloudProvider,
     'aliyunProvider': langData.aliyunProvider,
-    'luchentechProvider': langData.luchentechProvider
+    'aihubmixProvider': langData.aihubmixProvider
   };
 
   // 批量更新DOM

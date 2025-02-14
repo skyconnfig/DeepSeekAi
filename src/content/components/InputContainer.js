@@ -77,6 +77,7 @@ const setupTextarea = (textarea) => {
       return;
     }
 
+    // 保存当前光标位置
     const selectionStart = element.selectionStart;
     const selectionEnd = element.selectionEnd;
     const scrollTop = element.scrollTop;
@@ -101,10 +102,13 @@ const setupTextarea = (textarea) => {
       element.style.height = 'auto';
       const newHeight = Math.min(Math.max(element.scrollHeight, 44), 120);
       element.style.height = `${newHeight}px`;
+      // 恢复滚动位置和光标位置
       element.scrollTop = scrollTop;
       element.setSelectionRange(selectionStart, selectionEnd);
     } else {
       element.style.height = "44px";
+      // 在单行模式下也要恢复光标位置
+      element.setSelectionRange(selectionStart, selectionEnd);
     }
   };
 

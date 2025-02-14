@@ -146,7 +146,7 @@ export async function getAIResponse(
                   provider === 'iflytekstar' ? settings.iflytekstarApiKey :
                   provider === 'baiducloud' ? settings.baiducloudApiKey :
                   provider === 'aliyun' ? settings.aliyunApiKey :
-                  provider === 'luchentech' ? settings.luchentechApiKey :
+                  provider === 'aihubmix' ? settings.aihubmixApiKey :
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
@@ -191,8 +191,8 @@ export async function getAIResponse(
       ? 'https://qianfan.baidubce.com/v2/chat/completions'
       : provider === 'aliyun'
       ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
-      : provider === 'luchentech'
-      ? 'https://cloud.luchentech.com/api/maas/chat/completions'
+        : provider === 'aihubmix'
+      ? 'https://aihubmix.com/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
     const modelName = provider === 'volcengine'

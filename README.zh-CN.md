@@ -26,7 +26,6 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 > - [讯飞星辰](https://training.xfyun.cn/modelService) DeepSeek API
 > - [百度智能云](https://console.bce.baidu.com/qianfan/modelcenter/model/buildIn/list)
 > - [阿里云](https://bailian.console.aliyun.com/#/model-market) DeepSeek API
-> - [潞晨云] (https://cloud.luchentech.com/maas/modelMarket)
 
 ## ✨ 核心特性
 

@@ -62,92 +62,21 @@ const setupTextarea = (textarea) => {
     }
   };
 
-  const performHeightUpdate = (element) => {
-    const state = getState(element);
-    if (state.lock) return;
-
-    const valueToCheck = state.isComposing
-      ? element.value + state.compositionText
-      : element.value;
-
-    updateHasContent(element);
-
-    if (!valueToCheck.trim()) {
-      element.style.height = "44px";
-      return;
-    }
-
-    // 保存当前光标位置
-    const selectionStart = element.selectionStart;
-    const selectionEnd = element.selectionEnd;
-    const scrollTop = element.scrollTop;
-
-    const lines = valueToCheck.split('\n');
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    context.font = getComputedStyle(element).font;
-
-    const containerWidth = element.clientWidth - 32;
-    let needsExpand = false;
-
-    for (const line of lines) {
-      const metrics = context.measureText(line);
-      if (metrics.width > containerWidth) {
-        needsExpand = true;
-        break;
-      }
-    }
-
-    if (lines.length > 1 || needsExpand) {
-      element.style.height = 'auto';
-      const newHeight = Math.min(Math.max(element.scrollHeight, 44), 120);
-      element.style.height = `${newHeight}px`;
-      // 恢复滚动位置和光标位置
-      element.scrollTop = scrollTop;
-      element.setSelectionRange(selectionStart, selectionEnd);
-    } else {
-      element.style.height = "44px";
-      // 在单行模式下也要恢复光标位置
-      element.setSelectionRange(selectionStart, selectionEnd);
-    }
-  };
-
-  const handleComposition = (event) => {
-    const state = getState(event.target);
-    switch (event.type) {
-      case 'compositionstart':
-        state.isComposing = true;
-        state.compositionText = event.data || '';
-        state.originalValue = event.target.value;
-        break;
-      case 'compositionupdate':
-        state.compositionText = event.data || '';
-        state.isComposing = true;
-        break;
-      case 'compositionend':
-        state.isComposing = false;
-        state.compositionText = '';
-        event.target.value = state.originalValue + event.data;
-        requestAnimationFrame(() => {
-          performHeightUpdate(event.target);
-        });
-        break;
-    }
-    textareaState.set(event.target, state);
-  };
-
-  textarea.addEventListener("compositionstart", handleComposition);
-  textarea.addEventListener("compositionupdate", handleComposition);
-  textarea.addEventListener("compositionend", handleComposition);
+  let lastLineCount = 1;
 
   textarea.addEventListener("input", (event) => {
-    const state = getState(event.target);
-    if (!state.isComposing) {
-      state.originalValue = event.target.value;
-      requestAnimationFrame(() => {
-        performHeightUpdate(event.target);
-      });
+    const cursorPos = event.target.selectionStart;
+    const currentLineCount = event.target.value.split('\n').length;
+    const hasOverflow = event.target.scrollHeight > event.target.clientHeight;
+
+    // 在行数变化、出现溢出或内容为空时调整高度
+    if (currentLineCount !== lastLineCount || hasOverflow || !event.target.value) {
+      event.target.style.height = '44px';
+      event.target.style.height = `${Math.min(event.target.scrollHeight, 120)}px`;
+      lastLineCount = currentLineCount;
     }
+
+    event.target.setSelectionRange(cursorPos, cursorPos);
     updateHasContent(event.target);
   });
 

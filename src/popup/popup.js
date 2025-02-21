@@ -36,10 +36,6 @@ class PopupManager {
     this.uiManager.elements.rememberWindowSize.checked = settings.rememberWindowSize;
     this.uiManager.elements.pinWindow.checked = settings.pinWindow;
 
-    // 初始化火山引擎model输入框
-    if (settings.v3model) this.uiManager.elements.v3modelInput.value = settings.v3model;
-    if (settings.r1model) this.uiManager.elements.r1modelInput.value = settings.r1model;
-
     // 根据provider显示/隐藏相关元素并更新model选项
     this.updateProviderUI(currentProvider);
 
@@ -88,17 +84,6 @@ class PopupManager {
       (e) => this.storageManager.saveModel(e.target.value)
     );
 
-    // Volcengine model inputs
-    this.uiManager.elements.v3modelInput.addEventListener(
-      "change",
-      (e) => this.storageManager.saveV3Model(e.target.value)
-    );
-
-    this.uiManager.elements.r1modelInput.addEventListener(
-      "change",
-      (e) => this.storageManager.saveR1Model(e.target.value)
-    );
-
     // Selection enabled toggle
     this.uiManager.elements.selectionEnabled.addEventListener(
       "change",
@@ -139,21 +124,9 @@ class PopupManager {
       'click',
       (e) => this.handleInstructionsLink(e)
     );
-
-    // 火山引擎模型配置折叠按钮
-    document.getElementById('collapseButton').addEventListener('click', () => {
-      const button = document.getElementById('collapseButton');
-      const content = document.getElementById('volcengineModelsContent');
-      button.classList.toggle('collapsed');
-      content.classList.toggle('collapsed');
-    });
   }
 
   updateProviderUI(provider) {
-    // 显示/隐藏火山引擎model输入框
-    const volcengineModels = document.querySelector('.volcengine-models');
-    volcengineModels.style.display = provider === 'volcengine' ? 'block' : 'none';
-
     // 显示/隐藏余额相关元素
     const balanceSection = document.querySelector('.balance-section');
     balanceSection.style.display = provider === 'deepseek' ? 'flex' : 'none';
@@ -162,14 +135,14 @@ class PopupManager {
     const apiKeyLink = document.getElementById('apiKeyLink');
     const providerUrls = {
       'deepseek': 'https://platform.deepseek.com/api_keys',
-      'volcengine': 'https://console.volcengine.com/ark/region:ark+cn-beijing/apiKey?apikey=%7B%7D',
       'siliconflow': 'https://cloud.siliconflow.cn/i/lStn36vH',
       'openrouter': 'https://openrouter.ai/settings/keys',
+      'volcengine': 'https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=OXTHJAF8',
       'tencentcloud': 'https://console.cloud.tencent.com/lkeap/api',
       'iflytekstar': 'https://training.xfyun.cn/modelService',
       'baiducloud': 'https://console.bce.baidu.com/iam/#/iam/apikey/create',
       'aliyun': 'https://bailian.console.aliyun.com/?apiKey=1#/api-key',
-      'aihubmix': 'https://aihubmix.com/token'
+      'aihubmix': 'https://aihubmix.com/token',
     };
     apiKeyLink.href = providerUrls[provider] || providerUrls['deepseek'];
 
@@ -193,15 +166,15 @@ class PopupManager {
         { value: 'Pro/deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 Pro' },
         { value: 'Pro/deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 Pro' },
       ],
-      'volcengine': [
-        { value: 'v3', label: 'DeepSeek-V3' },
-        { value: 'r1', label: 'DeepSeek-R1' }
-      ],
       'openrouter': [
         { value: 'deepseek/deepseek-chat', label: 'DeepSeek-V3' },
         { value: 'deepseek/deepseek-r1', label: 'DeepSeek-R1' },
         { value: 'deepseek/deepseek-chat:free', label: 'DeepSeek-V3 Free' },
         { value: 'deepseek/deepseek-r1:free', label: 'DeepSeek-R1 Free' },
+      ],
+      'volcengine': [
+        { value: 'deepseek-v3-241226', label: 'DeepSeek-V3' },
+        { value: 'deepseek-r1-250120', label: 'DeepSeek-R1' }
       ],
       'tencentcloud': [
         { value: 'deepseek-v3', label: 'DeepSeek-V3' },
@@ -222,6 +195,7 @@ class PopupManager {
       'aihubmix': [
         { value: 'deepseek-reasoner', label: 'DeepSeek-R1 DeepSeek' },
         { value: 'deepseek-chat', label: 'DeepSeek-V3 DeepSeek' },
+        { value: 'deepseek-ai/DeepSeek-V3', label: 'DeepSeek-V3 Other' },
         { value: 'aihubmix-DeepSeek-R1', label: 'DeepSeek-R1 Azure' },
         { value: 'DeepSeek-R1', label: 'DeepSeek-R1 Aliyun&ByteDance' },
         { value: 'deepseek-ai/DeepSeek-R1', label: 'DeepSeek-R1 Mix' },
@@ -261,20 +235,6 @@ class PopupManager {
       return;
     }
 
-    // 检查火山引擎的Model ID
-    if (provider === 'volcengine') {
-      const v3modelId = this.uiManager.elements.v3modelInput.value;
-      const r1modelId = this.uiManager.elements.r1modelInput.value;
-
-      if (!v3modelId && !r1modelId) {
-        this.uiManager.showMessage(
-          this.i18nManager.getTranslation('modelIdRequired'),
-          false
-        );
-        return;
-      }
-    }
-
     // 显示验证中的消息
     this.uiManager.showMessage(
       this.i18nManager.getTranslation('validating'),
@@ -284,8 +244,6 @@ class PopupManager {
     try {
       const settings = {
         model: this.uiManager.elements.modelSelect.value,
-        v3model: this.uiManager.elements.v3modelInput.value,
-        r1model: this.uiManager.elements.r1modelInput.value
       };
 
       const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider, settings);
@@ -355,7 +313,7 @@ class PopupManager {
     });
   }
 
-  handleInstructionsLink(e) {
+  async handleInstructionsLink(e) {
     e.preventDefault();
     const instructionsUrl = chrome.runtime.getURL('Instructions/Instructions.html');
     chrome.tabs.create({
@@ -422,10 +380,6 @@ const translations = {
     pinWindowTip: "开启后，点击窗口外部不会自动关闭会话窗口",
     warningMessage: "部分服务商API如若不能正常使用请切换服务商",
     // 火山引擎相关
-    getModelId: "获取模型ID（必填）",
-    v3ModelLabel: "V3 Model ID:",
-    r1ModelLabel: "R1 Model ID:",
-    volcengineModelsTitle: "火山引擎模型配置",
     volcengineProvider: "火山引擎",
     siliconflowProvider: "硅基流动",
     tencentcloudProvider: "腾讯云",
@@ -433,6 +387,7 @@ const translations = {
     baiducloudProvider: "百度智能云",
     aliyunProvider: "阿里云",
     aihubmixProvider: "AIHubMix",
+    huaweicloudProvider: "华为云",
     },
   en: {
     headerTitle: "DeepSeek AI",
@@ -463,10 +418,6 @@ const translations = {
     pinWindowTip: "When enabled, clicking outside the window won't close it",
     warningMessage: "If some service provider APIs cannot be used normally, please switch providers.",
     // Volcengine related
-    getModelId: "Get Model ID(required)",
-    v3ModelLabel: "V3 Model ID:",
-    r1ModelLabel: "R1 Model ID:",
-    volcengineModelsTitle: "Volcengine Models Configuration",
     volcengineProvider: "Volcano Engine",
     siliconflowProvider: "SiliconFlow",
     tencentcloudProvider: "Tencent Cloud",
@@ -474,6 +425,7 @@ const translations = {
     baiducloudProvider: "Baidu Cloud",
     aihubmixProvider: "AIHubMix",
     aliyunProvider: "Aliyun",
+    huaweicloudProvider: "Huawei Cloud",
   },
 };
 
@@ -511,17 +463,14 @@ const updateContent = () => {
     'rememberWindowSizeLabel': langData.rememberWindowSizeLabel,
     'pinWindowLabel': langData.pinWindowLabel,
     // 火山引擎相关
-    'getModelId': langData.getModelId,
-    'v3ModelLabel': langData.v3ModelLabel,
-    'r1ModelLabel': langData.r1ModelLabel,
-    'volcengineModelsTitle': langData.volcengineModelsTitle,
     'volcengineProvider': langData.volcengineProvider,
     'siliconflowProvider': langData.siliconflowProvider,
     'tencentcloudProvider': langData.tencentcloudProvider,
     'iflytekstarProvider': langData.iflytekstarProvider,
     'baiducloudProvider': langData.baiducloudProvider,
     'aliyunProvider': langData.aliyunProvider,
-    'aihubmixProvider': langData.aihubmixProvider
+    'aihubmixProvider': langData.aihubmixProvider,
+    'huaweicloudProvider': langData.huaweicloudProvider,
   };
 
   // 批量更新DOM
@@ -570,11 +519,6 @@ const updateContent = () => {
   // 更新select的值
   document.getElementById('language').value = currentLang;
 
-  // 更新火山引擎选项
-  const volcengineProviderOption = document.getElementById('volcengineProvider');
-  if (volcengineProviderOption) {
-    volcengineProviderOption.textContent = langData.volcengineProvider;
-  }
 };
 
 // 界面国际化语言切换

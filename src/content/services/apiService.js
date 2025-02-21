@@ -139,9 +139,9 @@ export async function getAIResponse(
     });
 
     const provider = settings.provider || 'deepseek';
-    const apiKey = provider === 'volcengine' ? settings.volcengineApiKey :
-                  provider === 'siliconflow' ? settings.siliconflowApiKey :
+    const apiKey = provider === 'siliconflow' ? settings.siliconflowApiKey :
                   provider === 'openrouter' ? settings.openrouterApiKey :
+                  provider === 'volcengine' ? settings.volcengineApiKey :
                   provider === 'tencentcloud' ? settings.tencentcloudApiKey :
                   provider === 'iflytekstar' ? settings.iflytekstarApiKey :
                   provider === 'baiducloud' ? settings.baiducloudApiKey :
@@ -150,8 +150,6 @@ export async function getAIResponse(
                   settings.deepseekApiKey;
     const language = settings.language;
     const model = settings.model;
-    const v3model = settings.v3model;
-    const r1model = settings.r1model;
 
     if (!apiKey) {
       const linkElement = document.createElement("a");
@@ -177,12 +175,12 @@ export async function getAIResponse(
       return;
     }
 
-    const apiUrl = provider === 'volcengine'
-      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
-      : provider === 'siliconflow'
+    const apiUrl = provider === 'siliconflow'
       ? 'https://api.siliconflow.cn/v1/chat/completions'
       : provider === 'openrouter'
       ? 'https://openrouter.ai/api/v1/chat/completions'
+      : provider === 'volcengine'
+      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
       : provider === 'tencentcloud'
       ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
       : provider === 'iflytekstar'
@@ -191,42 +189,11 @@ export async function getAIResponse(
       ? 'https://qianfan.baidubce.com/v2/chat/completions'
       : provider === 'aliyun'
       ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
-        : provider === 'aihubmix'
+      : provider === 'aihubmix'
       ? 'https://aihubmix.com/v1/chat/completions'
       : 'https://api.deepseek.com/v1/chat/completions';
 
-    const modelName = provider === 'volcengine'
-      ? (model === 'r1' ? r1model : v3model)
-      : (isGreeting ? "deepseek-chat" : model);
-
-    // 检查火山引擎的Model ID
-    if (provider === 'volcengine') {
-      const requiredModel = model === 'r1' ? r1model : v3model;
-      if (!requiredModel) {
-        const modelType = model === 'r1' ? 'R1' : 'V3';
-        const linkElement = document.createElement("a");
-        linkElement.href = "#";
-        linkElement.textContent = `Please configure the ${modelType} Model ID in the extension settings first.`;
-        linkElement.style.color = "#0066cc";
-        linkElement.style.textDecoration = "underline";
-        linkElement.style.cursor = "pointer";
-        linkElement.addEventListener("click", async (e) => {
-          e.preventDefault();
-          try {
-            await chrome.runtime.sendMessage({ action: "openPopup" });
-          } catch (error) {
-            console.error('Failed to open popup:', error);
-            chrome.runtime.sendMessage({ action: "getSelectedText" });
-          }
-        });
-        responseElement.textContent = "";
-        responseElement.appendChild(linkElement);
-        if (existingIconContainer) {
-          responseElement.appendChild(existingIconContainer);
-        }
-        return;
-      }
-    }
+    const modelName = isGreeting ? "deepseek-chat" : model;
 
     const systemPrompt = quickActionPrompt && quickActionPrompt.includes('You are a professional multilingual translation engine')
       ? quickActionPrompt

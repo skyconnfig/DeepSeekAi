@@ -7,8 +7,6 @@ export class UiManager {
       providerSelect: document.getElementById("provider"),
       languageSelect: document.getElementById("language"),
       modelSelect: document.getElementById("model"),
-      v3modelInput: document.getElementById("v3model"),
-      r1modelInput: document.getElementById("r1model"),
       selectionEnabled: document.getElementById("selectionEnabled"),
       rememberWindowSize: document.getElementById("rememberWindowSize"),
       pinWindow: document.getElementById("pinWindow"),

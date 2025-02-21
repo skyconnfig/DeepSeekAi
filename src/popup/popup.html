@@ -902,7 +902,7 @@
             <option value="openrouter" id="openrouterProvider">OpenRouter</option>
             <option value="aihubmix" id="aihubmixProvider">AiHubMix</option>
             <option value="siliconflow" id="siliconflowProvider">SiliconFlow</option>
-            <option value="volcengine" id="volcengineProvider">VolcanoEngine</option>
+            <option value="volcengine" id="volcengineProvider">VolcEngine</option>
             <option value="tencentcloud" id="tencentcloudProvider">Tencent Cloud</option>
             <option value="iflytekstar" id="iflytekstarProvider">IFlytek Star</option>
             <option value="baiducloud" id="baiducloudProvider">Baidu Cloud</option>
@@ -958,36 +958,11 @@
             </button>
           </div>
         </div>
-        <div class="language-switch volcengine-models" style="display: none;">
-          <div class="volcengine-models-container">
-            <div class="volcengine-models-header">
-              <span id="volcengineModelsTitle">火山引擎模型配置</span>
-              <button class="collapse-button" id="collapseButton">
-                <svg viewBox="0 0 24 24" width="16" height="16">
-                  <path fill="currentColor" d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
-                </svg>
-              </button>
-            </div>
-            <div class="volcengine-models-content" id="volcengineModelsContent">
-              <a href="https://console.volcengine.com/ark/region:ark+cn-beijing/endpoint?config=%7B%7D" target="_blank" rel="noopener noreferrer" id="getModelId">获取Model ID</a>
-              <div class="model-input-group">
-                <label for="v3model" id="v3ModelLabel">V3 Model ID:</label>
-                <input type="text" id="v3model" placeholder="ep-xxxxxx">
-              </div>
-              <div class="model-input-group">
-                <label for="r1model" id="r1ModelLabel">R1 Model ID:</label>
-                <input type="text" id="r1model" placeholder="ep-xxxxxx">
-              </div>
-            </div>
-          </div>
-        </div>
         <div class="language-switch">
           <label for="model" id="modelLabel">Model Selection</label>
           <select id="model">
           </select>
         </div>
-
-
 
         <div class="language-switch">
           <label for="language" id="preferredLanguageLabel">Preferred Language</label>

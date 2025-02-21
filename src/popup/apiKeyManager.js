@@ -12,10 +12,6 @@ export class ApiKeyManager {
           url: 'https://api.deepseek.com/v1/chat/completions',
           model: settings?.model || 'deepseek-chat'
         },
-        'volcengine': {
-          url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
-          model: settings?.model === 'r1' ? settings?.r1model : settings?.v3model
-        },
         'siliconflow': {
           url: 'https://api.siliconflow.cn/v1/chat/completions',
           model: settings?.model || 'deepseek-ai/DeepSeek-V3'
@@ -27,6 +23,10 @@ export class ApiKeyManager {
         'tencentcloud': {
           url: 'https://api.lkeap.cloud.tencent.com/v1/chat/completions',
           model: settings?.model || 'deepseek-v3'
+        },
+        'volcengine': {
+          url: 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+          model: settings?.model || 'deepseek-v3-241226'
         },
         'iflytekstar': {
           url: 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions',
@@ -48,11 +48,6 @@ export class ApiKeyManager {
 
       const config = providerConfig[provider];
       if (!config) return false;
-
-      // 检查火山引擎的Model ID，只检查当前选择的模型
-      if (provider === 'volcengine' && !config.model) {
-        return false;
-      }
 
       const response = await new Promise(resolve => {
         chrome.runtime.sendMessage({

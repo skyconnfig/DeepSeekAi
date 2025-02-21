@@ -2,13 +2,13 @@ export class StorageManager {
   async getSettings() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(
-          ["deepseekApiKey", "volcengineApiKey", "siliconflowApiKey", "openrouterApiKey", "tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "aihubmixApiKey", "language", "model", "provider", "v3model", "r1model", "selectionEnabled", "rememberWindowSize", "pinWindow"],
+          ["deepseekApiKey", "siliconflowApiKey", "openrouterApiKey","volcengineApiKey" ,"tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "aihubmixApiKey", "language", "model", "provider", "selectionEnabled", "rememberWindowSize", "pinWindow"],
         (data) => {
           resolve({
             deepseekApiKey: data.deepseekApiKey || '',
-            volcengineApiKey: data.volcengineApiKey || '',
             siliconflowApiKey: data.siliconflowApiKey || '',
             openrouterApiKey: data.openrouterApiKey || '',
+            volcengineApiKey: data.volcengineApiKey || '',
             tencentcloudApiKey: data.tencentcloudApiKey || '',
             iflytekstarApiKey: data.iflytekstarApiKey || '',
             baiducloudApiKey: data.baiducloudApiKey || '',
@@ -17,8 +17,6 @@ export class StorageManager {
             language: data.language || 'en',
             model: data.model || 'deepseek-chat',
             provider: data.provider || 'deepseek',
-            v3model: data.v3model || '',
-            r1model: data.r1model || '',
             selectionEnabled: typeof data.selectionEnabled === 'undefined' ? true : data.selectionEnabled,
             rememberWindowSize: typeof data.rememberWindowSize === 'undefined' ? false : data.rememberWindowSize,
             pinWindow: typeof data.pinWindow === 'undefined' ? false : data.pinWindow
@@ -50,18 +48,6 @@ export class StorageManager {
   async saveProvider(provider) {
     return new Promise((resolve) => {
       chrome.storage.sync.set({ provider }, resolve);
-    });
-  }
-
-  async saveV3Model(v3model) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set({ v3model }, resolve);
-    });
-  }
-
-  async saveR1Model(r1model) {
-    return new Promise((resolve) => {
-      chrome.storage.sync.set({ r1model }, resolve);
     });
   }
 

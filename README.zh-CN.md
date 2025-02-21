@@ -19,7 +19,7 @@ DeepSeekAI 是一款非官方的浏览器扩展插件，基于 [DeepSeek](https:
 
 > **注意**：本扩展插件为第三方开发，非 DeepSeek 官方产品。使用本插件需要您自己的 DeepSeek API Key。我们支持以下 API 服务商：
 > - [DeepSeek](https://deepseek.com) 官方 API
-> - [字节跳动火山引擎](https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=OXTHJAF8) DeepSeek API
+> - [字节火山引擎](https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=OXTHJAF8) DeepSeek API ⭐ (推荐)
 > - [硅基流动](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API
 > - [OpenRouter](https://openrouter.ai/models) DeepSeek API
 > - [腾讯云](https://cloud.tencent.com/document/product/1772/115969) DeepSeek API

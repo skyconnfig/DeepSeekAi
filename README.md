@@ -19,7 +19,7 @@ DeepSeekAI is an unofficial browser extension powered by the [DeepSeek](https://
 
 > **Note**: This extension is a third-party development, not an official DeepSeek product. You need your own DeepSeek API Key to use this extension. We support the following API providers:
 > - [DeepSeek](https://deepseek.com) Official API
-> - [ByteDance Volcengine](https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=OXTHJAF8) DeepSeek API
+> - [ByteDance Volcengine](https://www.volcengine.com/experience/ark?utm_term=202502dsinvite&ac=DSASUQY5&rc=OXTHJAF8) DeepSeek API ⭐ (Recommended)
 > - [SiliconFlow](https://cloud.siliconflow.cn/i/lStn36vH) DeepSeek API
 > - [OpenRouter](https://openrouter.ai/models) DeepSeek API
 > - [Tencent Cloud](https://cloud.tencent.com/document/product/1772/115969) DeepSeek API

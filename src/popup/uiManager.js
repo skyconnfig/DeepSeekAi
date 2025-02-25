@@ -1,5 +1,11 @@
 export class UiManager {
   constructor() {
+    this.initElements();
+    this.isBalanceVisible = false;
+  }
+
+  // 初始化元素引用
+  initElements() {
     this.elements = {
       apiKeyInput: document.getElementById("apiKey"),
       toggleButton: document.getElementById("toggleVisibility"),
@@ -13,9 +19,17 @@ export class UiManager {
       balanceToggle: document.getElementById('balanceToggle'),
       balanceIcon: document.getElementById('balanceIcon'),
       balanceContent: document.getElementById('balanceContent'),
-      totalBalance: document.getElementById('totalBalance')
+      totalBalance: document.getElementById('totalBalance'),
+      customApiUrlInput: document.getElementById("customApiUrl")
     };
-    this.isBalanceVisible = false;
+  }
+
+  // 刷新DOM元素引用，确保它们被正确获取
+  refreshElements() {
+    // 重新获取可能未正确加载的元素
+    if (!this.elements.customApiUrlInput) {
+      this.elements.customApiUrlInput = document.getElementById("customApiUrl");
+    }
   }
 
   showMessage(message, isSuccess) {
@@ -77,5 +91,24 @@ export class UiManager {
 
   setApiKeyValue(value) {
     this.elements.apiKeyInput.value = value;
+  }
+
+  getCustomApiUrlValue() {
+    this.refreshElements();
+    return this.elements.customApiUrlInput?.value?.trim() || '';
+  }
+
+  setCustomApiUrlValue(value) {
+    this.refreshElements();
+    if (this.elements.customApiUrlInput) {
+      this.elements.customApiUrlInput.value = value;
+    }
+  }
+
+  setCustomApiUrlPlaceholder(value) {
+    this.refreshElements();
+    if (this.elements.customApiUrlInput) {
+      this.elements.customApiUrlInput.placeholder = value;
+    }
   }
 }

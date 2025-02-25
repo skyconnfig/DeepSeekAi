@@ -2,7 +2,9 @@ export class StorageManager {
   async getSettings() {
     return new Promise((resolve) => {
       chrome.storage.sync.get(
-          ["deepseekApiKey", "siliconflowApiKey", "openrouterApiKey","volcengineApiKey" ,"tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "aihubmixApiKey", "language", "model", "provider", "selectionEnabled", "rememberWindowSize", "pinWindow"],
+          ["deepseekApiKey", "siliconflowApiKey", "openrouterApiKey","volcengineApiKey" ,"tencentcloudApiKey", "iflytekstarApiKey","baiducloudApiKey","aliyunApiKey", "aihubmixApiKey",
+           "deepseekCustomApiUrl", "siliconflowCustomApiUrl", "openrouterCustomApiUrl", "volcengineCustomApiUrl", "tencentcloudCustomApiUrl", "iflytekstarCustomApiUrl", "baiducloudCustomApiUrl", "aliyunCustomApiUrl", "aihubmixCustomApiUrl",
+           "language", "model", "provider", "selectionEnabled", "rememberWindowSize", "pinWindow"],
         (data) => {
           resolve({
             deepseekApiKey: data.deepseekApiKey || '',
@@ -14,6 +16,15 @@ export class StorageManager {
             baiducloudApiKey: data.baiducloudApiKey || '',
             aliyunApiKey: data.aliyunApiKey || '',
             aihubmixApiKey: data.aihubmixApiKey || '',
+            deepseekCustomApiUrl: data.deepseekCustomApiUrl || '',
+            siliconflowCustomApiUrl: data.siliconflowCustomApiUrl || '',
+            openrouterCustomApiUrl: data.openrouterCustomApiUrl || '',
+            volcengineCustomApiUrl: data.volcengineCustomApiUrl || '',
+            tencentcloudCustomApiUrl: data.tencentcloudCustomApiUrl || '',
+            iflytekstarCustomApiUrl: data.iflytekstarCustomApiUrl || '',
+            baiducloudCustomApiUrl: data.baiducloudCustomApiUrl || '',
+            aliyunCustomApiUrl: data.aliyunCustomApiUrl || '',
+            aihubmixCustomApiUrl: data.aihubmixCustomApiUrl || '',
             language: data.language || 'en',
             model: data.model || 'deepseek-chat',
             provider: data.provider || 'deepseek',
@@ -66,6 +77,13 @@ export class StorageManager {
   async savePinWindow(enabled) {
     return new Promise((resolve) => {
       chrome.storage.sync.set({ pinWindow: enabled }, resolve);
+    });
+  }
+
+  async saveCustomApiUrl(provider, customApiUrl) {
+    const key = `${provider}CustomApiUrl`;
+    return new Promise((resolve) => {
+      chrome.storage.sync.set({ [key]: customApiUrl }, resolve);
     });
   }
 }

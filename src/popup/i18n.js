@@ -8,7 +8,15 @@ export class I18nManager {
         noBalance: '暂无余额',
         noApiKey: '请先设置 API Key',
         fetchError: '获取失败',
-        rememberWindowSize: '保存窗口大小'
+        rememberWindowSize: '保存窗口大小',
+        customApiUrlSaveSuccess: '自定义API地址已保存',
+        customApiUrlSaveError: '保存自定义API地址失败',
+        customApiUrlLabel: '自定义API地址',
+        customApiUrlPlaceholder: '输入自定义API地址（或使用默认地址）',
+        apiKeyEmpty: 'API密钥不能为空',
+        apiKeyLabel: 'API密钥',
+        apiKeyPlaceholder: '在此输入API密钥',
+        balanceText: '余额'
       },
       en: {
         validating: 'Validating...',
@@ -17,7 +25,15 @@ export class I18nManager {
         noBalance: 'No balance',
         noApiKey: 'Please set API Key first',
         fetchError: 'Failed to fetch',
-        rememberWindowSize: 'Save window size'
+        rememberWindowSize: 'Save window size',
+        customApiUrlSaveSuccess: 'Custom API URL saved',
+        customApiUrlSaveError: 'Failed to save custom API URL',
+        customApiUrlLabel: 'Custom API URL',
+        customApiUrlPlaceholder: 'Enter custom API URL (or use default)',
+        apiKeyEmpty: 'API key cannot be empty',
+        apiKeyLabel: 'API Key',
+        apiKeyPlaceholder: 'Enter API Key here',
+        balanceText: 'Balance'
       }
     };
   }

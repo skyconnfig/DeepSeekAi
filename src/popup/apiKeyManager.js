@@ -112,4 +112,56 @@ export class ApiKeyManager {
       return false;
     }
   }
+
+  // 获取自定义API URL
+  async getCustomApiUrl(provider) {
+    try {
+      const keyName = `${provider}CustomApiUrl`;
+      return new Promise((resolve) => {
+        chrome.storage.sync.get(keyName, (data) => {
+          resolve(data[keyName] || '');
+        });
+      });
+    } catch (error) {
+      console.error('获取自定义API URL错误:', error);
+      return '';
+    }
+  }
+
+  // 保存自定义API URL
+  async saveCustomApiUrl(customApiUrl, provider) {
+    try {
+      const keyName = `${provider}CustomApiUrl`;
+      return new Promise((resolve) => {
+        chrome.storage.sync.set({ [keyName]: customApiUrl }, () => {
+          if (chrome.runtime.lastError) {
+            console.error('保存自定义API URL错误:', chrome.runtime.lastError);
+            resolve(false);
+          } else {
+            resolve(true);
+          }
+        });
+      });
+    } catch (error) {
+      console.error('保存自定义API URL错误:', error);
+      return false;
+    }
+  }
+
+  // 获取默认API URL
+  getDefaultApiUrl(provider) {
+    const providerUrls = {
+      'deepseek': 'https://api.deepseek.com/v1/chat/completions',
+      'siliconflow': 'https://api.siliconflow.cn/v1/chat/completions',
+      'openrouter': 'https://openrouter.ai/api/v1/chat/completions',
+      'volcengine': 'https://ark.cn-beijing.volces.com/api/v3/chat/completions',
+      'tencentcloud': 'https://api.lkeap.cloud.tencent.com/v1/chat/completions',
+      'iflytekstar': 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions',
+      'baiducloud': 'https://qianfan.baidubce.com/v2/chat/completions',
+      'aliyun': 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions',
+      'aihubmix': 'https://aihubmix.com/v1/chat/completions'
+    };
+
+    return providerUrls[provider] || providerUrls['deepseek'];
+  }
 }

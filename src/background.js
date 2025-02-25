@@ -4,7 +4,9 @@ const requestControllers = new Map(); // 存储请求控制器
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === "getSettings") {
     chrome.storage.sync.get(
-      ["deepseekApiKey", "siliconflowApiKey", "openrouterApiKey","volcengineApiKey", "tencentcloudApiKey", "iflytekstarApiKey", "baiducloudApiKey", "aliyunApiKey", "aihubmixApiKey", "language", "model", "provider"],
+      ["deepseekApiKey", "siliconflowApiKey", "openrouterApiKey","volcengineApiKey", "tencentcloudApiKey", "iflytekstarApiKey", "baiducloudApiKey", "aliyunApiKey", "aihubmixApiKey",
+       "deepseekCustomApiUrl", "siliconflowCustomApiUrl", "openrouterCustomApiUrl", "volcengineCustomApiUrl", "tencentcloudCustomApiUrl", "iflytekstarCustomApiUrl", "baiducloudCustomApiUrl", "aliyunCustomApiUrl", "aihubmixCustomApiUrl",
+       "language", "model", "provider"],
       (data) => {
         sendResponse({
           deepseekApiKey: data.deepseekApiKey || '',
@@ -16,6 +18,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
           baiducloudApiKey: data.baiducloudApiKey || '',
           aliyunApiKey: data.aliyunApiKey || '',
           aihubmixApiKey: data.aihubmixApiKey || '',
+          deepseekCustomApiUrl: data.deepseekCustomApiUrl || '',
+          siliconflowCustomApiUrl: data.siliconflowCustomApiUrl || '',
+          openrouterCustomApiUrl: data.openrouterCustomApiUrl || '',
+          volcengineCustomApiUrl: data.volcengineCustomApiUrl || '',
+          tencentcloudCustomApiUrl: data.tencentcloudCustomApiUrl || '',
+          iflytekstarCustomApiUrl: data.iflytekstarCustomApiUrl || '',
+          baiducloudCustomApiUrl: data.baiducloudCustomApiUrl || '',
+          aliyunCustomApiUrl: data.aliyunCustomApiUrl || '',
+          aihubmixCustomApiUrl: data.aihubmixCustomApiUrl || '',
           language: data.language || 'en',
           model: data.model || 'deepseek-chat',
           provider: data.provider || 'deepseek'

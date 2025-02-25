@@ -151,6 +151,17 @@ export async function getAIResponse(
     const language = settings.language;
     const model = settings.model;
 
+    // 获取自定义API URL
+    const customApiUrl = provider === 'siliconflow' ? settings.siliconflowCustomApiUrl :
+                        provider === 'openrouter' ? settings.openrouterCustomApiUrl :
+                        provider === 'volcengine' ? settings.volcengineCustomApiUrl :
+                        provider === 'tencentcloud' ? settings.tencentcloudCustomApiUrl :
+                        provider === 'iflytekstar' ? settings.iflytekstarCustomApiUrl :
+                        provider === 'baiducloud' ? settings.baiducloudCustomApiUrl :
+                        provider === 'aliyun' ? settings.aliyunCustomApiUrl :
+                        provider === 'aihubmix' ? settings.aihubmixCustomApiUrl :
+                        settings.deepseekCustomApiUrl;
+
     if (!apiKey) {
       const linkElement = document.createElement("a");
       linkElement.href = "#";
@@ -175,23 +186,26 @@ export async function getAIResponse(
       return;
     }
 
-    const apiUrl = provider === 'siliconflow'
-      ? 'https://api.siliconflow.cn/v1/chat/completions'
-      : provider === 'openrouter'
-      ? 'https://openrouter.ai/api/v1/chat/completions'
-      : provider === 'volcengine'
-      ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
-      : provider === 'tencentcloud'
-      ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
-      : provider === 'iflytekstar'
-      ? 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions'
-      : provider === 'baiducloud'
-      ? 'https://qianfan.baidubce.com/v2/chat/completions'
-      : provider === 'aliyun'
-      ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
-      : provider === 'aihubmix'
-      ? 'https://aihubmix.com/v1/chat/completions'
-      : 'https://api.deepseek.com/v1/chat/completions';
+    // 使用自定义API URL或默认URL
+    const apiUrl = customApiUrl || (
+      provider === 'siliconflow'
+        ? 'https://api.siliconflow.cn/v1/chat/completions'
+        : provider === 'openrouter'
+        ? 'https://openrouter.ai/api/v1/chat/completions'
+        : provider === 'volcengine'
+        ? 'https://ark.cn-beijing.volces.com/api/v3/chat/completions'
+        : provider === 'tencentcloud'
+        ? 'https://api.lkeap.cloud.tencent.com/v1/chat/completions'
+        : provider === 'iflytekstar'
+        ? 'https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions'
+        : provider === 'baiducloud'
+        ? 'https://qianfan.baidubce.com/v2/chat/completions'
+        : provider === 'aliyun'
+        ? 'https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions'
+        : provider === 'aihubmix'
+        ? 'https://aihubmix.com/v1/chat/completions'
+        : 'https://api.deepseek.com/v1/chat/completions'
+    );
 
     const modelName = isGreeting ? "deepseek-chat" : model;
 

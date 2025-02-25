@@ -97,6 +97,28 @@
         margin-bottom: 12px;
       }
 
+      .api-key-container,
+      .api-url-container {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 14px;
+      }
+
+      .api-key-container label,
+      .api-url-container label {
+        font-size: 14px;
+        font-weight: 500;
+        margin-bottom: 4px;
+        color: rgba(60, 60, 67, 0.8);
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .api-key-container label,
+        .api-url-container label {
+          color: rgba(235, 235, 245, 0.8);
+        }
+      }
+
       input {
         flex: 1;
         padding: 10px 40px 10px 12px;
@@ -924,16 +946,30 @@
         </div>
 
         <div class="error-message" id="errorMessage"></div>
-        <div class="input-container">
-          <input
-            type="password"
-            id="apiKey"
-            required
-            placeholder="Enter API Key here"
-          />
-          <button class="toggle-visibility" id="toggleVisibility">
-            <img class="svg" src="../icons/show.svg" alt="" id="iconSwitch" />
-          </button>
+        <div class="api-key-container">
+          <label for="apiKey" id="apiKeyLabelText">API Key</label>
+          <div class="input-container">
+            <input
+              type="password"
+              id="apiKey"
+              required
+              placeholder="Enter API Key here"
+            />
+            <button class="toggle-visibility" id="toggleVisibility">
+              <img class="svg" src="../icons/show.svg" alt="" id="iconSwitch" />
+            </button>
+          </div>
+        </div>
+
+        <div class="api-url-container">
+          <label for="customApiUrl" id="customApiUrlLabel">Custom API URL</label>
+          <div class="input-container">
+            <input
+              type="text"
+              id="customApiUrl"
+              placeholder="Enter custom API URL (or use default)"
+            />
+          </div>
         </div>
 
         <div class="balance-section">

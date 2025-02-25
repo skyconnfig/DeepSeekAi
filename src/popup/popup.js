@@ -12,8 +12,16 @@ class PopupManager {
     this.uiManager = new UiManager();
     this.storageManager = new StorageManager();
 
-    this.initializeEventListeners();
-    this.loadInitialState();
+    // 确保DOM完全加载后再初始化
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', () => {
+        this.initializeEventListeners();
+        this.loadInitialState();
+      });
+    } else {
+      this.initializeEventListeners();
+      this.loadInitialState();
+    }
   }
 
   async loadInitialState() {
@@ -43,6 +51,37 @@ class PopupManager {
     if (settings.model) {
       this.uiManager.elements.modelSelect.value = settings.model;
     }
+
+    // 设置自定义API URL和默认URL（不使用setTimeout）
+    this.loadCustomApiUrl(currentProvider);
+  }
+
+  // 新增方法：加载自定义API URL
+  async loadCustomApiUrl(currentProvider) {
+    try {
+      // 确保元素已正确获取
+      this.uiManager.refreshElements();
+
+      // 获取自定义API URL
+      const customApiUrl = await this.apiKeyManager.getCustomApiUrl(currentProvider);
+      const defaultUrl = this.apiKeyManager.getDefaultApiUrl(currentProvider);
+
+      // 设置默认URL作为placeholder
+      this.uiManager.setCustomApiUrlPlaceholder(defaultUrl);
+
+      // 如果有自定义URL，设置到输入框
+      if (customApiUrl) {
+        this.uiManager.setCustomApiUrlValue(customApiUrl);
+      }
+
+      // 更新界面标签语言
+      this.updateLabels();
+
+      // 调用全局updateContent确保所有翻译一致
+      updateContent();
+    } catch (error) {
+      console.error('加载自定义API URL出错:', error);
+    }
   }
 
   initializeEventListeners() {
@@ -58,6 +97,12 @@ class PopupManager {
       () => this.handleApiKeyValidation()
     );
 
+    // 自定义API URL保存
+    this.uiManager.elements.customApiUrlInput.addEventListener(
+      "blur",
+      () => this.handleCustomApiUrlSave()
+    );
+
     // Provider selection
     this.uiManager.elements.providerSelect.addEventListener(
       "change",
@@ -65,17 +110,24 @@ class PopupManager {
         const provider = e.target.value;
         await this.storageManager.saveProvider(provider);
         this.updateProviderUI(provider);
+
         // 切换服务商时加载对应的API key
         const apiKey = await this.apiKeyManager.getApiKey(provider);
         this.uiManager.setApiKeyValue(apiKey || '');
         this.apiKeyManager.lastValidatedValue = apiKey || '';
+
+        // 加载对应的自定义API URL（使用新方法）
+        this.loadCustomApiUrl(provider);
       }
     );
 
     // Language selection
     this.uiManager.elements.languageSelect.addEventListener(
       "change",
-      (e) => this.storageManager.saveLanguage(e.target.value)
+      (e) => {
+        this.storageManager.saveLanguage(e.target.value);
+        this.updateLabels();
+      }
     );
 
     // Model selection
@@ -321,30 +373,116 @@ class PopupManager {
     });
   }
 
-  async validateAndSaveApiKey(apiKey, provider) {
-    if (!apiKey) {
-      this.uiManager.showMessage(this.i18nManager.getTranslation('apiKeyEmpty'), false);
-      return;
-    }
+  // 处理自定义API URL的保存
+  async handleCustomApiUrlSave() {
+    const customApiUrl = this.uiManager.getCustomApiUrlValue();
+    const provider = this.uiManager.elements.providerSelect.value;
 
     try {
-      const isValid = await this.apiKeyManager.validateApiKey(apiKey, provider);
+      await this.apiKeyManager.saveCustomApiUrl(customApiUrl, provider);
 
-      if (isValid) {
-        this.uiManager.showMessage(this.i18nManager.getTranslation('saveSuccess'), true);
-        await this.loadApiKey(provider);
-      } else {
-        this.uiManager.showMessage(this.i18nManager.getTranslation('apiKeyInvalid'), false);
+      // 如果自定义URL为空，显示默认URL作为placeholder
+      if (!customApiUrl) {
+        const defaultUrl = this.apiKeyManager.getDefaultApiUrl(provider);
+        this.uiManager.setCustomApiUrlPlaceholder(defaultUrl);
       }
+
+      this.uiManager.showMessage(
+        this.i18nManager.getTranslation('customApiUrlSaveSuccess'),
+        true
+      );
     } catch (error) {
-      console.error('Validation error:', error);
-      this.uiManager.showMessage(this.i18nManager.getTranslation('fetchError'), false);
+      console.error('保存自定义API URL错误:', error);
+      this.uiManager.showMessage(
+        this.i18nManager.getTranslation('customApiUrlSaveError'),
+        false
+      );
+    }
+  }
+
+  updateLabels() {
+    try {
+      // 确保元素已正确获取
+      this.uiManager.refreshElements();
+
+      // 获取当前语言
+      const currentLang = this.i18nManager.getCurrentLang();
+
+      // 更新接口上的所有文本为当前语言
+      const elements = {
+        'apiKeyLabelText': 'apiKeyLabel',
+        'balanceText': 'balanceText',
+        'rememberWindowSizeLabel': 'rememberWindowSize',
+        'customApiUrlLabel': 'customApiUrlLabel'
+      };
+
+      // 批量更新元素文本
+      Object.entries(elements).forEach(([elementId, translationKey]) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          element.textContent = this.i18nManager.getTranslation(translationKey) ||
+                               (currentLang === 'zh' ? '自定义API地址' : 'Custom API URL');
+        }
+      });
+
+      // 更新输入框placeholder
+      const inputElements = {
+        'apiKey': 'apiKeyPlaceholder',
+        'customApiUrl': 'customApiUrlPlaceholder'
+      };
+
+      // 批量更新输入框placeholder
+      Object.entries(inputElements).forEach(([elementId, translationKey]) => {
+        const element = document.getElementById(elementId);
+        if (element) {
+          // 为自定义API URL保留其特殊逻辑
+          if (elementId === 'customApiUrl') {
+            // 获取当前provider
+            const provider = this.uiManager.elements.providerSelect?.value;
+            if (provider) {
+              const defaultUrl = this.apiKeyManager.getDefaultApiUrl(provider);
+              if (defaultUrl) {
+                element.placeholder = defaultUrl;
+                return;
+              }
+            }
+          }
+
+          // 其他元素使用默认翻译逻辑
+          const defaultValue = currentLang === 'zh' ?
+            '输入自定义API地址（或使用默认地址）' :
+            'Enter custom API URL (or use default)';
+          element.placeholder = this.i18nManager.getTranslation(translationKey) || defaultValue;
+        }
+      });
+    } catch (error) {
+      console.error('Error updating labels:', error);
     }
   }
 }
 
+// 创建全局PopupManager实例，确保全局可访问
+let popupManagerInstance;
+
+// 界面国际化语言切换
+document.getElementById('language-toggle')?.addEventListener('click', () => {
+  const currentLang = getCurrentLang();
+  const newLang = currentLang === 'zh' ? 'en' : 'zh';
+  setCurrentLang(newLang);
+
+  // 更新全部UI文本
+  updateContent();
+  // 同时通过PopupManager实例更新标签
+  if (popupManagerInstance) {
+    popupManagerInstance.updateLabels();
+  }
+});
+
+// 使用DOMContentLoaded确保DOM加载后初始化
 document.addEventListener("DOMContentLoaded", () => {
-  new PopupManager();
+  popupManagerInstance = new PopupManager();
+  // 保存到window对象，便于访问
+  window.popupManagerInstance = popupManagerInstance;
   // 初始化界面语言
   updateContent();
 });
@@ -388,7 +526,12 @@ const translations = {
     aliyunProvider: "阿里云",
     aihubmixProvider: "AIHubMix",
     huaweicloudProvider: "华为云",
-    },
+    customApiUrlLabel: "自定义API地址",
+    customApiUrlPlaceholder: "输入自定义API地址（或使用默认地址）",
+    customApiUrlSaveSuccess: "自定义API地址保存成功",
+    customApiUrlSaveError: "保存自定义API地址时出错",
+    apiKeyLabel: "API密钥",
+  },
   en: {
     headerTitle: "DeepSeek AI",
     apiKeyPlaceholder: "Enter API Key here",
@@ -426,6 +569,11 @@ const translations = {
     aihubmixProvider: "AIHubMix",
     aliyunProvider: "Aliyun",
     huaweicloudProvider: "Huawei Cloud",
+    customApiUrlLabel: "Custom API URL",
+    customApiUrlPlaceholder: "Enter custom API URL (or use default)",
+    customApiUrlSaveSuccess: "Custom API URL saved successfully",
+    customApiUrlSaveError: "Error saving custom API URL",
+    apiKeyLabel: "API Key",
   },
 };
 
@@ -462,6 +610,9 @@ const updateContent = () => {
     'selectionEnabledLabel': langData.selectionEnabledLabel,
     'rememberWindowSizeLabel': langData.rememberWindowSizeLabel,
     'pinWindowLabel': langData.pinWindowLabel,
+    // 增加API密钥和自定义API URL标签
+    'apiKeyLabelText': langData.apiKeyLabel,
+    'customApiUrlLabel': langData.customApiUrlLabel,
     // 火山引擎相关
     'volcengineProvider': langData.volcengineProvider,
     'siliconflowProvider': langData.siliconflowProvider,
@@ -478,14 +629,37 @@ const updateContent = () => {
     const element = document.getElementById(id);
     if (element) {
       if (typeof value === 'object') {
-        Object.entries(value).forEach(([attr, attrValue]) => {
-          element[attr] = attrValue;
-        });
+        // 特殊处理customApiUrl，不更新其placeholder
+        if (id === 'customApiUrl') {
+          // 只更新非placeholder属性
+          Object.entries(value).forEach(([attr, attrValue]) => {
+            if (attr !== 'placeholder') {
+              element[attr] = attrValue;
+            }
+          });
+        } else {
+          // 其他输入框正常更新所有属性
+          Object.entries(value).forEach(([attr, attrValue]) => {
+            element[attr] = attrValue;
+          });
+        }
       } else {
         element.textContent = value;
       }
     }
   });
+
+  // 如果popupManagerInstance存在，确保自定义API URL的placeholder保持正确
+  if (window.popupManagerInstance && document.getElementById('customApiUrl')) {
+    const provider = document.getElementById('provider')?.value;
+    if (provider) {
+      const apiKeyManager = window.popupManagerInstance.apiKeyManager;
+      const defaultUrl = apiKeyManager.getDefaultApiUrl(provider);
+      if (defaultUrl) {
+        document.getElementById('customApiUrl').placeholder = defaultUrl;
+      }
+    }
+  }
 
   // 更新开关按钮的提示文本
   const switchTips = {
@@ -518,16 +692,7 @@ const updateContent = () => {
 
   // 更新select的值
   document.getElementById('language').value = currentLang;
-
 };
-
-// 界面国际化语言切换
-document.getElementById('language-toggle').addEventListener('click', () => {
-  const currentLang = getCurrentLang();
-  const newLang = currentLang === 'zh' ? 'en' : 'zh';
-  setCurrentLang(newLang);
-  updateContent();  // 只更新界面文本
-});
 
 // 监听语言选择器的change事件，用于大模型语言设置
 document.getElementById('language').addEventListener('change', (e) => {
